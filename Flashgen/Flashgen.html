@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FlashGen AI genera flashcards inteligentes con un pipeline modular, plantillas personalizables y herramientas de IA para estudiar mas rapido.">
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.jsdelivr.net/npm/@langchain/textsplitters@0.1.0/+esm; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net http://127.0.0.1:8000 http://127.0.0.1:8080 http://localhost:8000 http://localhost:8080; require-trusted-types-for 'script'; trusted-types default;">
+    <title>FlashGen AI - Sistema Modular Completo</title>
+    
+    <!-- ✅ OPTIMIZACIÓN: Preconnect a CDNs para reducir latencia -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    
+    <!-- ✅ OPTIMIZACIÓN: Preload CSS crítico con fallback -->
+    <link rel="preload" href="flashgen.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="flashgen.css"></noscript>
+    <script>
+        // Fallback para navegadores que no soportan onload en link
+        (function() {
+            var link = document.querySelector('link[rel="preload"][as="style"]');
+            if (link) {
+                link.onerror = function() {
+                    this.rel = 'stylesheet';
+                };
+            }
+        })();
+    </script>
+    
+    <!-- ✅ OPTIMIZACIÓN: Scripts críticos inline (trustedTypes debe ejecutarse primero) -->
+    <script>
+        if (window.trustedTypes) {
+            const canGetPolicy = typeof window.trustedTypes.getPolicy === 'function';
+            const hasPolicy = canGetPolicy && window.trustedTypes.getPolicy('default');
+            if (typeof window.trustedTypes.createPolicy === 'function' && !hasPolicy) {
+                window.trustedTypes.createPolicy('default', {
+                    createHTML: (input) => input,
+                    createScript: (input) => input,
+                    createScriptURL: (input) => input
+                });
+            }
+        }
+    </script>
+    
+    <!-- ✅ OPTIMIZACIÓN: Scripts no críticos con defer/async -->
+    <script src="https://cdn.jsdelivr.net/npm/compromise@14.10.0/builds/compromise.min.js" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet"></noscript>
+    
+    <!-- ✅ OPTIMIZACIÓN: LangChain core con defer -->
+    <script type="module" src="flashgen_refactored_v3/js/langchain-core.js" defer></script>
+    
+    <!-- ✅ OPTIMIZACIÓN: LangChain Text Splitters con defer (ya tenía defer) -->
+    <script type="module" defer>
+        // Importar LangChain Text Splitters
+        import { RecursiveCharacterTextSplitter } from 'https://cdn.jsdelivr.net/npm/@langchain/textsplitters@0.1.0/+esm';
+        // Hacer disponible globalmente
+        window.LangChainSplitter = RecursiveCharacterTextSplitter;
+    </script>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f172a'/%3E%3Cpath d='M24 44l8-24 8 24m-3-9H27' stroke='%23facc15' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    
+    <!-- ✅ OPTIMIZACIÓN: Verificación de CSS diferida (no bloquea renderizado) -->
+    <script defer>
+        // ✅ OPTIMIZACIÓN: Usar requestIdleCallback para no bloquear el hilo principal
+        function checkCSSLoaded() {
+            if (window.requestIdleCallback) {
+                requestIdleCallback(() => {
+            const testEl = document.createElement('div');
+            testEl.className = 'container';
+            testEl.style.position = 'absolute';
+            testEl.style.left = '-9999px';
+            document.body.appendChild(testEl);
+            const styles = window.getComputedStyle(testEl);
+            const hasStyles = styles.maxWidth && styles.maxWidth !== 'none';
+            if (hasStyles) {
+                console.log('✅ CSS cargado correctamente');
+            } else {
+                console.error('❌ CSS NO cargado - estilos no aplicados');
+                console.error('   Verifica que flashgen.css existe en el directorio raíz');
+            }
+            document.body.removeChild(testEl);
+                }, { timeout: 2000 });
+            } else {
+                // Fallback: usar setTimeout con delay
+                setTimeout(() => {
+                    const testEl = document.createElement('div');
+                    testEl.className = 'container';
+                    testEl.style.position = 'absolute';
+                    testEl.style.left = '-9999px';
+                    document.body.appendChild(testEl);
+                    const styles = window.getComputedStyle(testEl);
+                    const hasStyles = styles.maxWidth && styles.maxWidth !== 'none';
+                    if (hasStyles) {
+                        console.log('✅ CSS cargado correctamente');
+                    } else {
+                        console.error('❌ CSS NO cargado - estilos no aplicados');
+                        console.error('   Verifica que flashgen.css existe en el directorio raíz');
+                    }
+                    document.body.removeChild(testEl);
+                }, 100);
+            }
+        }
+        
+        window.addEventListener('load', checkCSSLoaded, { once: true });
+    </script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="ri-flashlight-fill"></i> FlashGen AI</h1>
+            <p>Generacion inteligente de flashcards con IA avanzada • Sistema modular completo</p>
+            <button id="debugToggle" style="position: absolute; top: 20px; right: 20px; padding: 6px 12px; font-size: 11px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-sm); cursor: pointer; color: var(--color-text-secondary); display: flex; align-items: center; gap: 4px; z-index: 10;">
+                <i class="ri-bug-line"></i> Debug Log
+            </button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="config"><i class="ri-settings-3-line"></i> Configuracion</button>
+            <button class="tab-btn" data-tab="templates"><i class="ri-file-list-3-line"></i> Plantillas</button>
+            <button class="tab-btn" data-tab="pipeline"><i class="ri-node-tree"></i> Pipeline</button>
+            <button class="tab-btn" data-tab="input"><i class="ri-edit-2-line"></i> Entrada</button>
+            <button class="tab-btn" data-tab="chain"><i class="ri-links-line"></i> Cadena</button>
+            <button class="tab-btn" data-tab="results"><i class="ri-bar-chart-box-line"></i> Resultados</button>
+            <button class="tab-btn" data-tab="learning"><i class="ri-graduation-cap-line"></i> Aprendizaje</button>
+            <button class="tab-btn" data-tab="comparison"><i class="ri-scales-3-line"></i> Comparacion</button>
+            <button class="tab-btn" data-tab="export"><i class="ri-save-3-line"></i> Exportar</button>
+        </div>
+
+        <!-- CONFIG TAB -->
+        <div class="tab-content active" id="config">
+            <div class="card">
+                <form id="apiConfigForm" autocomplete="off" style="display: contents;">
+                <h3><i class="ri-plug-line"></i> API Configuration</h3>
+                <div class="form-group">
+                    <label class="form-label" for="apiProfile">Perfil</label>
+                    <select class="form-control" id="apiProfile">
+                        <option value="local">Local (LM Studio)</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="apiEndpoint">Endpoint</label>
+                    <input type="text" class="form-control" id="apiEndpoint" value="http://127.0.0.1:8080/v1/chat/completions" autocomplete="url">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="apiKey">API Key (opcional)</label>
+                    <input type="password" class="form-control" id="apiKey" placeholder="sk-..." autocomplete="current-password">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="modelName">Modelo</label>
+                    <input type="text" class="form-control" id="modelName" value="local-model">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" id="testApiBtn">Probar API LLM</button>
+                    <button type="button" class="btn btn-success" id="testSpacyBtn">Probar spaCy</button>
+                    <button type="button" class="btn btn-secondary" id="saveConfigBtn">Guardar</button>
+                </div>
+                <div id="apiStatus" class="stats" style="margin-top: 16px;">
+                    <div class="stat-item">
+                        <span class="stat-label">Estado API</span>
+                        <span class="stat-value" style="font-size: 14px;">No probado</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Latencia</span>
+                        <span class="stat-value" style="font-size: 14px;">--</span>
+                    </div>
+                </div>
+                <div id="spacyStatus" class="stats" style="margin-top: 16px;">
+                    <div class="stat-item">
+                        <span class="stat-label">Estado spaCy</span>
+                        <span class="stat-value" style="font-size: 14px;">No probado</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Latencia</span>
+                        <span class="stat-value" style="font-size: 14px;">--</span>
+                    </div>
+                </div>
+                </form>
+            </div>
+
+
+
+            <div class="card">
+                <h3><i class="ri-archive-line"></i> Procesamiento por Lotes</h3>
+                
+                <div style="background: var(--color-info-bg); padding: 12px; border-radius: var(--radius-base); margin-bottom: 16px; font-size: 12px; line-height: 1.5;">
+                    <strong style="color: var(--color-info); display: block; margin-bottom: 6px;">📦 ¿Que es el Procesamiento por Lotes?</strong>
+                    <p style="margin: 0; color: var(--color-text-secondary);">
+                        Procesa multiples chunks en paralelo para mayor velocidad. <strong>Desactivar:</strong> Configurar tamaño del lote = 0 para procesamiento secuencial.
+                    </p>
+                </div>
+                
+                <div class="grid-2" style="gap: 16px;">
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <label class="form-label" style="font-size: 13px;" for="batchSizeSlider">🎯 Tamaño del Lote</label>
+                            <span id="batchSizeValue" style="font-size: 16px; font-weight: 600; color: var(--color-primary);">0</span>
+                        </div>
+                        <input type="range" class="slider" id="batchSizeSlider" min="0" max="10" step="1" value="0">
+                        <p style="font-size: 11px; color: var(--color-text-secondary); margin-top: 6px;">
+                            Chunks procesados en paralelo. <strong>0 = Desactivado</strong> (secuencial)
+                        </p>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <label class="form-label" style="font-size: 13px;" for="batchDelaySlider">⏱️ Retraso entre Lotes</label>
+                            <span id="batchDelayValue" style="font-size: 16px; font-weight: 600; color: var(--color-success);">200ms</span>
+                        </div>
+                        <input type="range" class="slider" id="batchDelaySlider" min="0" max="3000" step="100" value="200">
+                        <p style="font-size: 11px; color: var(--color-text-secondary); margin-top: 6px;">
+                            Pausa entre lotes para evitar sobrecarga de la API
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="padding: 8px; background: var(--color-success-bg); border-radius: var(--radius-base); text-align: center;">
+                        <div style="font-size: 16px; font-weight: 700; color: var(--color-success);" id="batchThroughput">Secuencial</div>
+                        <div style="font-size: 10px; color: var(--color-text-secondary); margin-top: 2px;">Flashcards/min</div>
+                    </div>
+                    <div style="padding: 8px; background: var(--color-info-bg); border-radius: var(--radius-base); text-align: center;">
+                        <div style="font-size: 16px; font-weight: 700; color: var(--color-info);" id="batchApiCalls">0</div>
+                        <div style="font-size: 10px; color: var(--color-text-secondary); margin-top: 2px;">Llamadas paralelo</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="memoryPanel" style="display: none;">
+                <h3><i class="ri-brain-line"></i> Context Memory</h3>
+                <div id="memoryHistory" style="max-height: 300px; overflow-y: auto; margin-bottom: 16px;">
+                    <p class="empty-state">No hay conversaciones previas</p>
+                </div>
+                <button class="btn btn-secondary btn-sm" id="clearMemoryBtn"><i class="ri-delete-bin-line"></i> Limpiar Memoria</button>
+            </div>
+
+            <div class="card" id="agentPanel" style="display: none;">
+                <h3><i class="ri-robot-line"></i> Agent Tools</h3>
+                <div class="tool-grid" id="agentTools">
+                    <div class="tool-item" data-tool="web-search">
+                        <div class="tool-icon"><i class="ri-global-line"></i></div>
+                        <div>Web Search</div>
+                    </div>
+                    <div class="tool-item" data-tool="dictionary">
+                        <div class="tool-icon"><i class="ri-book-open-line"></i></div>
+                        <div>Dictionary API</div>
+                    </div>
+                    <div class="tool-item" data-tool="image-generator">
+                        <div class="tool-icon"><i class="ri-image-line"></i></div>
+                        <div>Image Generator</div>
+                    </div>
+                    <div class="tool-item" data-tool="tts-service">
+                        <div class="tool-icon"><i class="ri-volume-up-line"></i></div>
+                        <div>TTS Service</div>
+                    </div>
+                </div>
+                <div id="agentToolLog" class="agent-log empty-state" style="margin-top: 16px; font-size: 13px; color: var(--color-text-secondary);">
+                    <i class="ri-terminal-line"></i> Logs de herramientas apareceran aqui
+                </div>
+            </div>
+        </div>
+
+        <!-- TEMPLATES TAB -->
+        <div class="tab-content" id="templates">
+            <div class="card">
+                <h3><i class="ri-file-list-3-line"></i> Template Manager</h3>
+                <div class="form-group">
+                    <label class="form-label" for="templateSelect">Plantilla Activa</label>
+                    <select class="form-control" id="templateSelect"></select>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="newTemplateBtn"><i class="ri-add-line"></i> Nueva</button>
+                    <button class="btn btn-secondary" id="saveTemplateBtn"><i class="ri-save-line"></i> Guardar</button>
+                    <button class="btn btn-outline" id="deleteTemplateBtn"><i class="ri-delete-bin-line"></i> Eliminar</button>
+                    <button class="btn btn-outline" id="testTemplateBtn"><i class="ri-test-tube-line"></i> Probar</button>
+                    <button class="btn btn-outline" id="importTemplateBtn"><i class="ri-import-line"></i> Importar</button>
+                    <button class="btn btn-outline" id="exportTemplateBtn"><i class="ri-export-line"></i> Exportar</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="ri-edit-2-line"></i> Edit Template</h3>
+                <div class="form-group">
+                    <label class="form-label" for="templateName">Nombre</label>
+                    <input type="text" class="form-control" id="templateName" placeholder="Nombre de la plantilla">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="systemPrompt">System Prompt</label>
+                    <textarea class="form-control" id="systemPrompt" placeholder="Eres un experto en..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="userPrompt">User Prompt</label>
+                    <textarea class="form-control" id="userPrompt" placeholder="Analiza el siguiente texto: {text}"></textarea>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="varLanguage">Variable: language</label>
+                        <input type="text" class="form-control" id="varLanguage" placeholder="Ingles">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="varSubject">Variable: subject</label>
+                        <input type="text" class="form-control" id="varSubject" placeholder="Filosofia">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="varDifficulty">Variable: difficulty</label>
+                        <input type="text" class="form-control" id="varDifficulty" placeholder="intermedio">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="varBookTitle">Variable: bookTitle</label>
+                        <input type="text" class="form-control" id="varBookTitle" placeholder="El Extranjero">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="varChapter">Variable: chapter</label>
+                        <input type="text" class="form-control" id="varChapter" placeholder="Capitulo 1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="varChapterSummary">Variable: chapterSummary</label>
+                        <textarea class="form-control" id="varChapterSummary" placeholder="Resumen breve del capitulo..." style="min-height: 80px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="varTargetLanguage">Variable: targetLanguage</label>
+                        <input type="text" class="form-control" id="varTargetLanguage" placeholder="Español">
+                    </div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="templateQuickMode">
+                        <label for="templateQuickMode">⚡ Modo Rapido - Template optimizada para listas de palabras</label>
+                    </div>
+                </div>
+                <h4 style="font-size: 14px; margin: 24px 0 12px 0; color: var(--color-success);"><i class="ri-magic-line"></i> Mejora de Prompts</h4>
+                <div style="background: var(--color-info-bg); padding: 12px; border-radius: var(--radius-base); margin-bottom: 16px; font-size: 13px; line-height: 1.6;">
+                    <strong style="color: var(--color-info); display: block; margin-bottom: 8px;">💡 ¿Que son estas opciones?</strong>
+                    <p style="margin: 0; color: var(--color-text-secondary);">
+                        Estas configuraciones mejoran la calidad de las flashcards generadas mediante tecnicas avanzadas de prompting. Se aplican <strong>solo a esta plantilla</strong> para mayor control y personalizacion.
+                    </p>
+                </div>
+                
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="templateEnableFewShot">
+                        <label for="templateEnableFewShot"><strong>📚 Few-Shot Learning</strong></label>
+                    </div>
+                    <p style="font-size: 11px; color: var(--color-text-secondary); margin: 4px 0 12px 24px;">
+                        Incluye ejemplos de flashcards bien hechas en el prompt. El modelo aprende del formato y estilo de los ejemplos.
+                    </p>
+                    
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="templateEnableFewShotNegatives">
+                        <label for="templateEnableFewShotNegatives"><strong>❌ Ejemplos Negativos</strong></label>
+                    </div>
+                    <p style="font-size: 11px; color: var(--color-text-secondary); margin: 4px 0 12px 24px;">
+                        Muestra ejemplos de flashcards mal hechas para que el modelo evite esos errores. Mejora la precision.
+                    </p>
+                    
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="templateNegativeExamplesInline">
+                        <label for="templateNegativeExamplesInline"><strong>📝 Ejemplos Inline</strong></label>
+                    </div>
+                    <p style="font-size: 11px; color: var(--color-text-secondary); margin: 4px 0 12px 24px;">
+                        Coloca ejemplos negativos en el mismo prompt (no en seccion separada). util para modelos con contexto limitado.
+                    </p>
+                    
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="templateChainOfThought">
+                        <label for="templateChainOfThought"><strong>🧠 Chain of Thought</strong></label>
+                    </div>
+                    <p style="font-size: 11px; color: var(--color-text-secondary); margin: 4px 0 12px 24px;">
+                        Pide al modelo que razone paso a paso antes de generar la flashcard. Mejora la logica y coherencia.
+                    </p>
+                </div>
+                
+                <div style="margin-top: 16px; padding: 12px; background: var(--color-warning-bg); border-radius: var(--radius-base); font-size: 12px;">
+                    <strong style="color: var(--color-warning);">⚠️ Impacto en Rendimiento:</strong>
+                    <p style="margin: 4px 0 0 0; color: var(--color-text-secondary);">
+                        Activar estas opciones aumenta el tamaño del prompt y el tiempo de generacion. Recomendado para plantillas criticas donde la calidad es prioritaria.
+                    </p>
+                </div>
+                
+                <div style="margin-top: 16px; padding: 12px; background: var(--color-bg-1); border-left: 3px solid var(--color-info); border-radius: var(--radius-base);">
+                    <strong>ℹ️ Otras Configuraciones:</strong>
+                    <p style="font-size: 12px; color: var(--color-text-secondary); margin: 8px 0 0 0;">
+                        🔧 El <strong>Metodo de Chunking</strong> se configura en la pestaña <strong>📥 Entrada</strong>.
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="outputTypeSelect">Tipo de salida</label>
+                    <select class="form-control" id="outputTypeSelect">
+                        <option value="template">Usar template activa</option>
+                        <option value="word_translation">Palabra → Traduccion</option>
+                        <option value="sentence_translation">Frase → Traduccion</option>
+                        <option value="word_with_sentence">Palabra → Traduccion + Ejemplo</option>
+                        <option value="sentence_generation">Palabra → Genera frase</option>
+                    </select>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="autoDetectLanguage">🌐 Idioma Origen</label>
+                        <div class="checkbox-item" style="margin-top: 8px;">
+                            <input type="checkbox" id="autoDetectLanguage" checked>
+                            <label for="autoDetectLanguage">✨ Autodeteccion automatica</label>
+                        </div>
+                        <p style="font-size: 11px; color: var(--color-text-secondary); margin-top: 4px;">
+                            Detecta el idioma del texto automaticamente usando NLP
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="targetLanguageSelect">🎯 Idioma Destino</label>
+                        <select class="form-control" id="targetLanguageSelect">
+                            <option value="Español" selected>Español</option>
+                            <option value="Ingles">Ingles</option>
+                            <option value="Frances">Frances</option>
+                            <option value="Aleman">Aleman</option>
+                            <option value="Italiano">Italiano</option>
+                            <option value="Portugues">Portugues</option>
+                            <option value="Chino">Chino</option>
+                            <option value="Japones">Japones</option>
+                            <option value="Coreano">Coreano</option>
+                            <option value="Ruso">Ruso</option>
+                            <option value="arabe">arabe</option>
+                        </select>
+                        <p style="font-size: 11px; color: var(--color-text-secondary); margin-top: 4px;">
+                            Idioma de las respuestas en las flashcards
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>👁️ Preview</h3>
+                <div class="code-block" id="templatePreview">Vista previa aparecera aqui...</div>
+            </div>
+
+            <!-- EJEMPLOS FEW-SHOT -->
+            <div class="card">
+                <h3>📚 Ejemplos Few-Shot</h3>
+                <p style="color: var(--color-text-secondary); margin-bottom: 16px;">
+                    Guia al LLM con ejemplos de respuestas correctas e incorrectas. Los ejemplos se incluiran en el prompt segun la activacion.
+                </p>
+                
+                <div class="btn-group" style="margin-bottom: 16px;">
+                    <button class="btn btn-sm btn-secondary" id="fewShotPositiveTab" data-active="true">
+                        ✅ Positivos
+                    </button>
+                    <button class="btn btn-sm btn-outline" id="fewShotNegativeTab">
+                        ❌ Negativos
+                    </button>
+                </div>
+                
+                <div id="fewShotPositiveContainer">
+                    <div style="background: var(--color-success-bg); padding: 10px; border-radius: var(--radius-base); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="enableFewShotPositive" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            <label for="enableFewShotPositive" style="margin: 0; cursor: pointer; font-weight: 600; color: var(--color-success);">
+                                ✅ Activar Ejemplos Positivos
+                            </label>
+                        </div>
+                        <span id="fewShotPositiveCount" style="font-size: 12px; color: var(--color-text-secondary);">0 ejemplos</span>
+                    </div>
+                    
+                    <div id="fewShotPositiveList" style="margin-bottom: 12px;">
+                        <!-- Ejemplos positivos -->
+                    </div>
+                    <button class="btn btn-sm btn-secondary" id="addFewShotPositive">
+                        ➕ Agregar Ejemplo Positivo
+                    </button>
+                </div>
+                
+                <div id="fewShotNegativeContainer" style="display: none;">
+                    <div style="background: var(--color-danger-bg); padding: 10px; border-radius: var(--radius-base); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="enableFewShotNegative" style="width: 18px; height: 18px; cursor: pointer;">
+                            <label for="enableFewShotNegative" style="margin: 0; cursor: pointer; font-weight: 600; color: var(--color-danger);">
+                                ❌ Activar Ejemplos Negativos
+                            </label>
+                        </div>
+                        <span id="fewShotNegativeCount" style="font-size: 12px; color: var(--color-text-secondary);">0 ejemplos</span>
+                    </div>
+                    
+                    <div id="fewShotNegativeList" style="margin-bottom: 12px;">
+                        <!-- Ejemplos negativos -->
+                    </div>
+                    <button class="btn btn-sm btn-secondary" id="addFewShotNegative">
+                        ➕ Agregar Ejemplo Negativo
+                    </button>
+                </div>
+                
+                <div class="btn-group" style="margin-top: 16px;">
+                    <button class="btn btn-sm btn-outline" id="clearFewShotBtn">
+                        🗑️ Limpiar Todo
+                    </button>
+                </div>
+                
+                <div style="margin-top: 16px; padding: 12px; background: var(--color-info-bg); border-radius: var(--radius-base); font-size: 12px;">
+                    <strong style="color: var(--color-info);">💡 Como funciona:</strong>
+                    <ul style="margin: 8px 0 0 20px; color: var(--color-text-secondary); line-height: 1.6;">
+                        <li><strong>Positivos:</strong> Muestran al modelo como debe generar las flashcards</li>
+                        <li><strong>Negativos:</strong> Enseñan al modelo que errores evitar</li>
+                        <li>Los ejemplos se insertan automaticamente en el prompt cuando estan activados</li>
+                        <li>Puedes tener ambos tipos activados simultaneamente</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PARSER PERSONALIZADO -->
+            <div class="card">
+                <h3>🔧 Parser Personalizado</h3>
+                <p style="color: var(--color-text-secondary); margin-bottom: 16px;">
+                    Define como interpretar la respuesta del LLM
+                </p>
+                
+                <div class="form-group">
+                    <label class="form-label" for="parserQuestionPattern">Patron de Pregunta</label>
+                    <input type="text" class="form-control" id="parserQuestionPattern" value="Q:|Pregunta:|Question:" placeholder="Q:|Pregunta:">
+                    <p style="font-size: 11px; color: var(--color-text-secondary); margin-top: 4px;">
+                        Separar multiples patrones con |
+                    </p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="parserAnswerPattern">Patron de Respuesta</label>
+                    <input type="text" class="form-control" id="parserAnswerPattern" value="A:|Respuesta:|Answer:" placeholder="A:|Respuesta:">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="parserTestInput">Probar Parser</label>
+                    <textarea class="form-control" id="parserTestInput" placeholder="Pega aqui una respuesta de ejemplo del LLM..." rows="3"></textarea>
+                    <button class="btn btn-sm btn-secondary" id="testParserBtn" style="margin-top: 8px;">
+                        🧪 Probar
+                    </button>
+                </div>
+                
+                <div id="parserTestOutput" class="code-block" style="display: none; margin-top: 12px;">
+                    <!-- Resultado del test -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- PIPELINE TAB -->
+        <div class="tab-content" id="pipeline">
+            <!-- EDITOR DE PIPELINE -->
+            <div class="card">
+                <h3>🔧 Editable Pipeline</h3>
+                <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Arrastra para reordenar, haz clic en el check para activar/desactivar pasos</p>
+                
+                <div style="margin-bottom: 16px; padding: 12px; background: var(--color-info-bg); border-radius: var(--radius-base); color: var(--color-info); font-size: 13px;">
+                    <strong>Organizacion:</strong> Los pasos estan organizados en Pre-generacion (procesamiento de texto) y Post-generacion (refinamiento de flashcards). Los pasos marcados con "spaCy" funcionan mejor con segmentacion neuronal.
+                </div>
+                
+                <!-- Contenedor dinámico de pasos del pipeline -->
+                <div class="pipeline-steps" id="pipelineSteps">
+                    <p style="text-align: center; color: var(--color-text-secondary); padding: 24px;">⏳ Cargando pipeline...</p>
+                </div>
+                
+                <!-- Indicador de estado del pipeline -->
+                <div id="pipelineStatus" style="margin-top: 16px; padding: 12px; background: var(--color-bg-1); border-radius: var(--radius-base); display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span id="pipelineStatusText" style="font-size: 13px; color: var(--color-text-secondary);"></span>
+                        <span id="pipelineStepCount" style="font-size: 12px; color: var(--color-primary); font-weight: 600;"></span>
+                    </div>
+            </div>
+
+            <!-- LANGCHAIN CONFIGURATION SECTION (Always visible below pipeline) -->
+            <div class="card" id="langChainConfigPanel" style="display: none; border-left: 4px solid var(--color-primary);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                        🔗 LangChain Configuration
+                        <span style="font-size: 11px; background: var(--color-primary); color: white; padding: 2px 6px; border-radius: 4px;">Advanced</span>
+                    </h3>
+                    <button class="btn btn-sm btn-outline" id="refreshChainConfig">🔄 Refrescar</button>
+                </div>
+                
+                <p style="color: var(--color-text-secondary); margin-bottom: 20px; font-size: 13px;">
+                    Configura el comportamiento detallado de la cadena de razonamiento secuencial. Define como interactuan los agentes de IA en cada etapa del proceso.
+                </p>
+
+                <div class="tabs" style="margin-bottom: 16px;">
+                    <button class="tab-btn-sub active" onclick="document.querySelectorAll('.lc-tab').forEach(t=>t.style.display='none'); document.getElementById('lc-gen').style.display='block';">🤖 Generacion</button>
+                    <button class="tab-btn-sub" onclick="document.querySelectorAll('.lc-tab').forEach(t=>t.style.display='none'); document.getElementById('lc-eval').style.display='block';">⚖️ Evaluacion</button>
+                    <button class="tab-btn-sub" onclick="document.querySelectorAll('.lc-tab').forEach(t=>t.style.display='none'); document.getElementById('lc-refine').style.display='block';">🔄 Refinamiento</button>
+                </div>
+
+                <!-- GENERATION AGENT -->
+                <div id="lc-gen" class="lc-tab" style="display: block;">
+                    <h4 style="margin-top: 0; color: var(--color-primary);">Agente de Generacion Inicial</h4>
+                    <div class="form-group">
+                        <label class="form-label" for="lc_gen_strategy">Estrategia de Prompting</label>
+                        <select class="form-control" id="lc_gen_strategy">
+                            <option value="standard">Estandar (System + User)</option>
+                            <option value="few_shot">Few-Shot (Con ejemplos)</option>
+                            <option value="chain_of_thought">Chain of Thought (Razonamiento paso a paso)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="lc_gen_system">System Prompt Base (Override)</label>
+                        <textarea class="form-control" id="lc_gen_system" rows="3" placeholder="Define la personalidad base del agente generador..."></textarea>
+                        <p style="font-size: 11px; color: var(--color-text-secondary);">Si se deja vacio, usa el prompt del template seleccionado.</p>
+                    </div>
+                </div>
+
+                <!-- EVALUATION AGENT -->
+                <div id="lc-eval" class="lc-tab" style="display: none;">
+                    <h4 style="margin-top: 0; color: var(--color-primary);">Agente de Evaluacion (Critico)</h4>
+                    <div class="form-group">
+                        <div class="form-label">Modo de Evaluacion</div>
+                        <div style="display: flex; gap: 16px;">
+                            <label for="lc_eval_mode_heuristic"><input type="radio" id="lc_eval_mode_heuristic" name="lc_eval_mode" value="heuristic" checked> Heuristico (Reglas)</label>
+                            <label for="lc_eval_mode_llm"><input type="radio" id="lc_eval_mode_llm" name="lc_eval_mode" value="llm"> LLM como Juez (IA)</label>
+                        </div>
+                    </div>
+                    <div id="lc_eval_llm_opts" style="display: none; margin-top: 12px; padding: 12px; background: var(--color-bg-1); border-radius: 4px;">
+                        <div class="form-group">
+                            <label class="form-label" for="lc_eval_criteria">Criterios de Evaluacion</label>
+                            <textarea class="form-control" id="lc_eval_criteria" rows="3" placeholder="Ej: 'Evalua claridad (1-10), fidelidad al texto (1-10) y formato...'"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="lc_eval_threshold">Umbral de Aprobacion (Score 0-100)</label>
+                        <input type="number" class="form-control" id="lc_eval_threshold" value="75" min="0" max="100">
+                    </div>
+                </div>
+
+                <!-- REFINEMENT AGENT -->
+                <div id="lc-refine" class="lc-tab" style="display: none;">
+                    <h4 style="margin-top: 0; color: var(--color-primary);">Agente de Refinamiento</h4>
+                    <div class="form-group">
+                        <label class="form-label" for="lc_refine_max">Maximo de Iteraciones</label>
+                        <input type="number" class="form-control" id="lc_refine_max" value="2" min="1" max="5">
+                        <p style="font-size: 11px; color: var(--color-text-secondary);">Limite de ciclos de correccion para evitar loops infinitos.</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="lc_refine_instructions">Instrucciones de Correccion</label>
+                        <textarea class="form-control" id="lc_refine_instructions" rows="3" placeholder="Instrucciones especificas para el agente corrector..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INPUT TAB -->
+        <div class="tab-content" id="input">
+            <div class="card">
+                <h3>📋 Importar Contenido</h3>
+                <div class="btn-group" style="margin-bottom: 16px;">
+                    <button class="btn btn-secondary" id="importTextBtn">📄 Importar Archivo de Texto</button>
+                    <button class="btn btn-secondary" id="importPdfBtn">📕 Importar PDF</button>
+                    <button class="btn btn-secondary" id="importWordListBtn">📝 Importar Lista de Palabras</button>
+                    <button class="btn btn-secondary" id="importJsonBtn">📋 Importar JSON Segmentado</button>
+                    <button class="btn btn-secondary" id="pasteFromClipboardBtn">📋 Pegar Portapapeles</button>
+                    <button class="btn btn-secondary" id="clearInputBtn">🗑️ Limpiar</button>
+                </div>
+                <input type="file" id="fileInput" accept=".txt,.md,.json,.csv,.pdf,.docx" style="display: none;">
+                <div id="importStatus" style="margin-top: 12px; padding: 12px; background: var(--color-bg-1); border-radius: var(--radius-base); display: none;">
+                    <span id="importStatusText"></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>✍️ Input Text</h3>
+                <textarea class="form-control" id="inputText" placeholder="Pega aqui el texto para generar flashcards...
+
+Formatos soportados:
+• Texto plano para analisis general
+• Lista de palabras (una por linea) para vocabulario
+• JSON: {&quot;chunks&quot;: [{&quot;text&quot;: &quot;...&quot;, &quot;metadata&quot;: {...}}]}"></textarea>
+                <div class="stats" style="margin-top: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;" id="inputStats">
+                    <div class="stat-item">
+                        <span class="stat-label">Caracteres</span>
+                        <span class="stat-value" id="charCount" style="font-size: 16px;">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Palabras</span>
+                        <span class="stat-value" id="wordCount" style="font-size: 16px;">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Lineas</span>
+                        <span class="stat-value" id="lineCount" style="font-size: 16px;">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Chunks estimados</span>
+                        <span class="stat-value" id="estimatedChunks" style="font-size: 16px;">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGMENTATION SECTION (moved from separate tab) -->
+            <div class="card">
+                <h3>✂️ Configuracion de Segmentacion</h3>
+                <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Selecciona el motor de segmentacion y configura los parametros para dividir el texto en chunks optimos.</p>
+                <!-- MOTOR DE SEGMENTACIoN -->
+                <div class="form-group">
+                    <div class="form-label">Motor de Segmentacion</div>
+                    <div style="display: flex; gap: 16px; margin-top: 8px;">
+                        <label for="segmentationEngine_heuristic" style="display: flex; align-items: center; cursor: pointer;"><input type="radio" id="segmentationEngine_heuristic" name="segmentationEngine" value="heuristic" checked style="margin-right: 8px;"><span>🔧 Heuristicas</span></label>
+                        <label for="segmentationEngine_spacy" style="display: flex; align-items: center; cursor: pointer;"><input type="radio" id="segmentationEngine_spacy" name="segmentationEngine" value="spacy" style="margin-right: 8px;"><span>🧠 spaCy</span></label>
+                    </div>
+                </div>
+                
+                <!-- PANEL SPACY (oculto por defecto) -->
+                <div id="spacyPanel" style="display: none; margin-bottom: 24px; padding: 16px; background: var(--color-bg-1); border-radius: var(--radius-base); border-left: 3px solid var(--color-primary);">
+                    <h4 style="margin-top: 0; font-size: 16px;">🧠 Configuracion spaCy</h4>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="spacyModel">Modelo de Idioma</label>
+                        <select class="form-control" id="spacyModel">
+                            <option value="en_core_web_lg">🇬🇧 Ingles (en_core_web_lg)</option>
+                            <option value="es_core_news_lg">🇪🇸 Español (es_core_news_lg)</option>
+                            <option value="fr_core_news_lg">🇫🇷 Frances (fr_core_news_lg)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="spacyStrategy">
+                        Estrategia de Segmentacion
+                        <button type="button" class="btn btn-sm btn-outline" id="showSpacyStrategyInfo" style="margin-left: 8px; padding: 2px 8px;">❓</button>
+                        </label>
+                        <select class="form-control" id="spacyStrategy">
+                            <optgroup label="Basicas">
+                                <option value="sentences">📝 Por Oraciones (doc.sents)</option>
+                                <option value="entities">🏷️ Por Entidades Nombradas (NER)</option>
+                                <option value="noun_chunks">📦 Por Sintagmas Nominales</option>
+                                <option value="semantic_similarity">🔍 Similitud Semantica (vectors)</option>
+                            </optgroup>
+                            <optgroup label="Avanzadas">
+                                <option value="chapter_sents">📚 Capitulos + Oraciones (Libros tecnicos)</option>
+                                <option value="entity_context">🎭 Entidades + Contexto (Biografias/Historia)</option>
+                                <option value="semantic_blocks">🧠 Bloques Semanticos (Filosofia/Ensayos)</option>
+                                <option value="vocab_extract">🗣️ Extraccion Vocabulario (Idiomas)</option>
+                                <option value="clause_segment">⚙️ Clausulas Sintacticas (Analisis Gramatical)</option>
+                                <option value="verb_phrase_segment">🎬 Sintagmas Verbales (Acciones Especificas)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="spacyEndpoint">Endpoint del Servidor FastAPI</label>
+                        <input type="text" class="form-control" id="spacyEndpoint" value="http://localhost:8000" placeholder="http://localhost:8000">
+                        <p style="font-size: 11px; color: var(--color-text-secondary); margin-top: 4px;">
+                            Servidor FastAPI con spaCy. Ejecutar: <code>uvicorn server:app --reload</code>
+                        </p>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary" id="generateWithSpacy" style="width: 100%;">
+                        🚀 Generar con spaCy Neuronal
+                    </button>
+                    
+                    <div id="spacyStatus" style="margin-top: 12px; padding: 8px; border-radius: var(--radius-sm); display: none;"></div>
+                </div>
+                
+                <!-- PANEL HEURiSTICAS (visible por defecto) -->
+                <div id="heuristicPanel">
+                    <div class="form-group">
+                        <label class="form-label" for="chunkMethod">
+                            Metodo de Segmentacion
+                            <button type="button" class="btn btn-sm btn-outline" id="showChunkMethodInfo" style="margin-left: 8px; padding: 2px 8px;">❓</button>
+                        </label>
+                    <select class="form-control" id="chunkMethod">
+                        <option value="sentence">� Por oraciones (compromise.js)</option>
+                        <option value="paragraph">� Por parrafos (regex \n\n)</option>
+                        <option value="chapter">� Por capitulos (regex patterns)</option>
+                        <option value="fixed">� Tamaño fijo (caracteres)</option>
+                        <option value="semantic">� Semantico (Topics)</option>
+                        <option value="langchain">⭐ LangChain Recursivo</option>
+                    </select>
+                    <div id="methodHelpText" style="font-size: 12px; color: var(--color-text-secondary); margin-top: 8px; padding: 8px; background: var(--color-bg-1); border-radius: var(--radius-sm); display: none;">
+                        💡 <span id="methodHelpContent"></span>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="manualContextGroup" style="display: none;">
+                    <label class="form-label" for="manualContext">Contexto Manual (opcional)</label>
+                    <textarea class="form-control" id="manualContext" placeholder="Añade contexto manual que se incluira en todas las flashcards generadas. Ejemplo: 'Este contenido es del libro X, capitulo Y, donde se discute Z...'" style="min-height: 80px;"></textarea>
+                    <p style="font-size: 11px; color: var(--color-text-secondary); margin-top: 4px;">
+                        Este contexto se inyectara en cada prompt para mejorar la relevancia y precision de las flashcards.
+                    </p>
+                </div>
+                
+                <div class="form-group" id="chunkSizeGroup">
+                    <label class="form-label" for="chunkSize">Tamaño objetivo (caracteres)</label>
+                    <input type="number" class="form-control" id="chunkSize" value="500" min="100" max="3000" step="50">
+                    <p style="font-size: 11px; color: var(--color-text-secondary); margin-top: 4px;">
+                        Recomendado: 300-800 para conceptos especificos, 800-1500 para contextos amplios
+                    </p>
+                </div>
+                
+                <div class="slider-container" id="overlapGroup">
+                    <div class="slider-header">
+                        <label class="form-label" for="chunkOverlap">Solapamiento</label>
+                        <span id="overlapValue">10%</span>
+                    </div>
+                    <input type="range" class="slider" id="chunkOverlap" min="0" max="50" step="5" value="10">
+                    <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 8px;">Evita cortes abruptos entre chunks. Mayor solapamiento = mas coherencia entre chunks.</p>
+                </div>
+                
+                <div class="form-group" id="minChunkSizeGroup" style="display: none;">
+                    <label class="form-label" for="minChunkSize">Tamaño minimo de chunk (caracteres)</label>
+                    <input type="number" class="form-control" id="minChunkSize" value="100" min="50" max="1000" step="50">
+                    <p style="font-size: 11px; color: var(--color-text-secondary); margin-top: 4px;">
+                        Chunks mas pequeños se fusionaran o descartaran
+                    </p>
+                </div>
+                
+                <div class="form-group" id="semanticOptions" style="display: none;">
+                    <label class="form-label" for="semanticThreshold">Umbral de similitud semantica</label>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>Mas fragmentos</span>
+                            <span id="semanticThresholdValue">0.75</span>
+                            <span>Menos fragmentos</span>
+                        </div>
+                        <input type="range" class="slider" id="semanticThreshold" min="0.5" max="0.95" step="0.05" value="0.75">
+                        <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 8px;">
+                            Agrupa oraciones similares semanticamente. Valor mas alto = chunks mas cohesivos.
+                        </p>
+                    </div>
+                </div>
+                </div><!-- Fin heuristicPanel -->
+            </div>
+
+            <div class="card">
+                <h3>👁️ Vista Previa de Segmentacion</h3>
+                <div class="chunk-preview" id="chunkPreview">
+                    <p class="empty-state">Los chunks apareceran aqui cuando ingreses texto en la pestaña Entrada</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📆 Estadisticas de Segmentacion</h3>
+                <div class="stats" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;" id="segmentationStats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Chunks</span>
+                        <span class="stat-value" id="totalChunksValue">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Promedio Caracteres</span>
+                        <span class="stat-value" id="avgCharsValue">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Promedio Palabras</span>
+                        <span class="stat-value" id="avgWordsValue">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Rango</span>
+                        <span class="stat-value" id="rangeValue">0 - 0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- GENERACIoN Y PROGRESO (al final) -->
+            <div class="card" style="text-align: center;">
+                <h3>🚀 Generacion de Flashcards</h3>
+                <div class="btn-group" style="margin-bottom: 16px; display: inline-flex; justify-content: center;">
+                    <button class="btn btn-primary" id="generateBtn">🚀 Generar Flashcards</button>
+                    <button class="btn btn-secondary" id="cancelGenerationBtn" style="display: none;">⏹️ Cancelar</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 style="text-align: center;">📈 Progreso de Generacion</h3>
+                <div id="progressStatus" style="margin-bottom: 16px; color: var(--color-text-secondary); text-align: center;">Listo para generar</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAIN TAB -->
+        <div class="tab-content" id="chain">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="margin: 0;">⛓️ Visualización de Cadena (LangChain)</h3>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label for="showChainVisualization" style="margin: 0; font-size: 13px;">Activar visualización</label>
+                        <input type="checkbox" id="showChainVisualization" checked style="width: 18px; height: 18px; cursor: pointer;">
+                    </div>
+                </div>
+                <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Visualiza el flujo de prompts secuenciales (activar en Configuracion)</p>
+                <div class="btn-group" style="margin-bottom: 16px;">
+                    <button class="btn btn-secondary btn-sm" id="expandAllSteps">➕ Expandir Todo</button>
+                    <button class="btn btn-secondary btn-sm" id="collapseAllSteps">➖ Colapsar Todo</button>
+                </div>
+                <div id="chainVisualization">
+                    <p class="empty-state">Genera flashcards con el "Modo Chain" activado para ver el proceso de razonamiento paso a paso.</p>
+                </div>
+            </div>
+            <div class="card">
+                <h3>🔗 Información de Cadena</h3>
+                <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Detalles sobre la configuración y estado de la cadena de procesamiento</p>
+                <div id="chainInfo">
+                    <p class="empty-state">La información detallada de la cadena aparecerá aquí cuando se active el modo Chain.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS TAB -->
+        <div class="tab-content" id="results">
+            <div class="card">
+                <h3>📈 Estadísticas de Generación</h3>
+                <div class="stats" id="resultsStats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total</span>
+                        <span class="stat-value" data-stat="total">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Aprobadas</span>
+                        <span class="stat-value" data-stat="approved" style="color: var(--color-success);">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Rechazadas</span>
+                        <span class="stat-value" data-stat="rejected" style="color: var(--color-error);">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Pendientes</span>
+                        <span class="stat-value" data-stat="pending" style="color: var(--color-warning);">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="chainMetricsCard">
+                <h3>⛓️ Métricas de Cadena</h3>
+                <div id="chainMetricsContent">
+                    <p class="empty-state">Las métricas de cadena aparecerán aquí cuando se generen flashcards con el modo Chain activado.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Tarjetas Generadas</h3>
+                <div class="btn-group" style="margin-bottom: 16px;">
+                    <button class="btn btn-primary btn-sm" id="approveAllBtn">✅ Aprobar Todo</button>
+                    <button class="btn btn-secondary btn-sm" id="rejectAllBtn">❌ Rechazar Todo</button>
+                </div>
+                <div id="flashcardsList">
+                    <p class="empty-state">Las tarjetas generadas apareceran aqui</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEARNING TAB -->
+        <div class="tab-content" id="learning">
+            <div class="card">
+                <h3>🧠 Análisis de Aprendizaje</h3>
+                <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Analisis de tokens y razonamiento del modelo</p>
+                <div class="form-group">
+                    <label class="form-label" for="learningCardSelect">Seleccionar Tarjeta</label>
+                    <select class="form-control" id="learningCardSelect">
+                        <option value="">-- Selecciona una tarjeta generada --</option>
+                    </select>
+                </div>
+                <div id="tokenAnalysis">
+                    <p class="empty-state">Genera tarjetas para ver el análisis detallado de tokens y atención.</p>
+                </div>
+            </div>
+            <div class="card">
+                <h3>📊 Métricas de Rendimiento</h3>
+                <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Análisis de eficiencia y calidad del modelo</p>
+                <div id="performanceMetrics">
+                    <p class="empty-state">Las métricas de rendimiento aparecerán aquí después del análisis de tokens.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPARISON TAB -->
+        <div class="tab-content" id="comparison">
+            <div class="card">
+                <h3>⚖️ Comparación de Modos</h3>
+                <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Compara el rendimiento entre generación determinista y estocástica (creatividad alta vs baja).</p>
+                <button class="btn btn-primary" id="compareModesBtn" style="width: 100%; margin-bottom: 16px;">🔄 Ejecutar Comparación</button>
+                <div id="modeComparison">
+                    <p class="empty-state">Los resultados de la comparación aparecerán aquí.</p>
+                </div>
+            </div>
+            <div class="card">
+                <h3>📈 Análisis Comparativo</h3>
+                <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Estadísticas detalladas y métricas de calidad entre modos</p>
+                <div id="comparisonAnalysis">
+                    <p class="empty-state">El análisis comparativo detallado aparecerá aquí después de ejecutar la comparación.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPORT TAB -->
+        <div class="tab-content" id="export">
+            <div class="card">
+                <h3>📤 Exportar Flashcards</h3>
+                <div class="form-group">
+                    <label class="form-label" for="exportFormat">Formato de exportación</label>
+                    <select class="form-control" id="exportFormat">
+                        <option value="json">JSON (Completo)</option>
+                        <option value="csv">CSV (Excel/Sheets)</option>
+                        <option value="anki">Anki (Texto plano con tabulaciones)</option>
+                        <option value="markdown">Markdown (Obsidian/Notion)</option>
+                    </select>
+                </div>
+                <div class="btn-group" style="margin-bottom: 16px;">
+                    <button class="btn btn-primary" id="exportBtn">💾 Descargar Archivo</button>
+                    <button class="btn btn-secondary" id="copyExportBtn">📋 Copiar al Portapapeles</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>👁️ Vista Previa</h3>
+                <div class="code-block" id="exportPreview">Selecciona un formato para ver la vista previa...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Debug Console -->
+<div id="debugConsole" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 300px; background: var(--color-charcoal-800); border-top: 2px solid var(--color-primary); z-index: 9999; padding: 16px; overflow-y: auto; font-family: var(--font-family-mono); font-size: 11px; color: var(--color-gray-200);">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+        <strong style="color: var(--color-primary);">🐛 Debug Log</strong>
+        <button id="clearDebugLog" style="padding: 4px 12px; font-size: 11px; background: var(--color-error); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 500;">❌ Cerrar Debug</button>
+    </div>
+    <div id="debugOutput" style="white-space: nowrap; overflow-x: auto; font-size: 12px; line-height: 1.3;"></div>
+</div>
+
+<script type="module" defer>
+    // ✅ OPTIMIZACIÓN: Cargar módulos principales de forma diferida
+    // Los módulos críticos se cargan inmediatamente, los no críticos se cargan lazy
+    import * as FlashgenModules from './flashgen_refactored_v3/index.js';
+    
+    // Exponer en window para compatibilidad (CRÍTICO para que ChainBuilder encuentre TrueLangChain y ChainHandlers)
+    Object.assign(window, FlashgenModules);
+    
+    // Log de confirmación
+    console.log('✅ FlashGen Modules cargados:', Object.keys(FlashgenModules));
+    console.log('✅ window.TrueLangChain:', typeof window.TrueLangChain);
+    console.log('✅ window.ChainHandlers:', typeof window.ChainHandlers);
+    console.log('✅ window.ProfileManager:', typeof window.ProfileManager);
+    
+    // Función de inicialización
+    function initializeApp() {
+        try {
+            // 0. Inicializar DebugLogger primero
+            if (window.DebugLogger && typeof window.DebugLogger.init === 'function') {
+                window.DebugLogger.init();
+                console.log('✅ DebugLogger inicializado');
+            }
+            
+            // 1. Inicializar UI principal (UI.init() se encarga de TabManager, DomCache y EventBinder internamente)
+            if (window.UI && typeof window.UI.init === 'function') {
+                window.UI.init();
+                window.UIInstance = window.UI; // Instancia global para API.test
+                console.log('✅ UI inicializado');
+            } else {
+                console.error('❌ window.UI no disponible');
+            }
+            
+            // 2. Renderizar pipeline
+            if (window.PipelineManager && typeof window.PipelineManager.renderPipeline === 'function') {
+                window.PipelineManager.renderPipeline();
+                console.log('✅ Pipeline renderizado');
+            }
+            
+            // 3. Inicializar Templates
+            if (window.Templates && typeof window.Templates.init === 'function') {
+                window.Templates.init();
+                console.log('✅ Templates inicializado');
+            }
+            
+            // 4. Aplicar perfil por defecto
+            if (window.ProfileManager && typeof window.ProfileManager.apply === 'function') {
+                const defaultProfile = window.State?.config?.profile || 'balanced';
+                window.ProfileManager.apply(defaultProfile);
+                console.log('✅ Perfil aplicado:', defaultProfile);
+            }
+            
+            // 5. Cargar estado desde localStorage
+            if (window.Storage && typeof window.Storage.load === 'function') {
+                window.Storage.load();
+                console.log('✅ Estado cargado');
+            }
+            
+            // 5. NO inicializar módulos de pestañas aquí - se inicializan lazy al activar cada pestaña
+            // Los módulos Results, Exporter, Learning, Comparison y ChainVisualization
+            // se inicializan automáticamente cuando el usuario hace click en su pestaña
+            console.log('✅ Módulos de pestañas listos para inicialización lazy');
+            
+            // ✅ DIAGNÓSTICO: Verificar qué módulos se cargaron correctamente
+            console.log('\n═══════════════════════════════════════════════════════════');
+            console.log('📦 DIAGNÓSTICO DE MÓDULOS CARGADOS');
+            console.log('═══════════════════════════════════════════════════════════\n');
+            
+            const expectedModules = {
+                'Core': ['UI', 'TabManager', 'DomCache', 'EventBinder', 'DebugLogger', 'State', 'Storage'],
+                'Processing': ['ChunkStrategies', 'Processing', 'ClozeEngine'],
+                'Pipeline': ['Pipeline', 'PipelineManager', 'PipelineStepHandlers'],
+                'Managers': ['Templates', 'FewShotManager', 'ParserManager', 'ProfileManager'],
+                'Chain': ['ChainBuilder', 'ChainHandlers', 'ChainVisualization', 'ChainPanelController'],
+                'UI Modules': ['Results', 'Exporter', 'Learning', 'Comparison'],
+                'API': ['API'],
+                'External': ['TrueLangChain', 'ChainNode']
+            };
+            
+            let totalExpected = 0;
+            let totalLoaded = 0;
+            
+            Object.entries(expectedModules).forEach(([category, modules]) => {
+                console.log(`\n📁 ${category}:`);
+                modules.forEach(moduleName => {
+                    totalExpected++;
+                    const isLoaded = typeof window[moduleName] !== 'undefined';
+                    if (isLoaded) {
+                        totalLoaded++;
+                        const moduleType = typeof window[moduleName];
+                        console.log(`   ✅ ${moduleName} (${moduleType})`);
+                    } else {
+                        console.error(`   ❌ ${moduleName} - NO CARGADO`);
+                    }
+                });
+            });
+            
+            console.log(`\n📊 RESUMEN: ${totalLoaded}/${totalExpected} módulos cargados`);
+            if (totalLoaded < totalExpected) {
+                console.error(`⚠️ ADVERTENCIA: Faltan ${totalExpected - totalLoaded} módulos`);
+            } else {
+                console.log('✅ Todos los módulos están cargados correctamente');
+            }
+            
+            console.log('\n═══════════════════════════════════════════════════════════\n');
+            
+            console.log('🎉 Aplicación inicializada completamente');
+            
+            // ✅ OPTIMIZACIÓN: Diferir diagnóstico no crítico usando requestIdleCallback
+            // Dividido en chunks MUY pequeños para evitar violaciones de tiempo (>50ms)
+            // Solo ejecutar diagnóstico si está en modo desarrollo (hay un parámetro ?debug)
+            if (window.location.search.includes('debug')) {
+                // ✅ OPTIMIZACIÓN: Cachear elementos DOM para evitar múltiples queries
+                let cachedElements = null;
+                const getCachedElements = () => {
+                    if (!cachedElements) {
+                        cachedElements = {
+                            container: document.querySelector('.container'),
+                            header: document.querySelector('.header'),
+                            tabs: document.querySelector('.tabs'),
+                            tabButtons: document.querySelectorAll('.tab-btn'),
+                            tabContents: document.querySelectorAll('.tab-content')
+                        };
+                    }
+                    return cachedElements;
+                };
+                
+                // Chunk 1: Verificaciones rápidas (solo estructura básica, sin CSS costoso)
+                const runDiagnosticsChunk1 = (deadline) => {
+                    // Verificar tiempo disponible ANTES de hacer cualquier trabajo
+                    if (deadline.timeRemaining() < 10) {
+                        if (window.requestIdleCallback) {
+                            requestIdleCallback(runDiagnosticsChunk1, { timeout: 1000 });
+                        }
+                        return;
+                    }
+                    
+                    const startTime = performance.now();
+                    console.log('\n═══════════════════════════════════════════════════════════');
+                    console.log('📊 DIAGNÓSTICO COMPLETO DE VISUALIZACIÓN');
+                    console.log('═══════════════════════════════════════════════════════════\n');
+                    
+                    // ✅ OPTIMIZACIÓN: Verificar CSS de forma más eficiente (sin crear elemento)
+                    const container = document.querySelector('.container');
+                    const cssLoaded = container && window.getComputedStyle(container).maxWidth !== 'none';
+                    console.log('1️⃣ CSS:', cssLoaded ? '✅ Cargado' : '❌ NO cargado');
+                    
+                    // Verificar estructura HTML básica (usar cache)
+                    if (deadline.timeRemaining() < 5) {
+                        if (window.requestIdleCallback) {
+                            requestIdleCallback(runDiagnosticsChunk2, { timeout: 1000 });
+                        }
+                        return;
+                    }
+                    
+                    const elements = getCachedElements();
+                    console.log('2️⃣ Estructura HTML:');
+                    console.log('   - Container:', elements.container ? '✅' : '❌');
+                    console.log('   - Header:', elements.header ? '✅' : '❌');
+                    console.log('   - Tabs:', elements.tabs ? '✅' : '❌');
+                    console.log('   - Botones:', elements.tabButtons.length, '/ 9');
+                    console.log('   - Contenidos:', elements.tabContents.length, '/ 9');
+                    
+                    const elapsed = performance.now() - startTime;
+                    if (elapsed > 30) {
+                        console.warn(`⚠️ Chunk 1 tomó ${elapsed.toFixed(2)}ms (objetivo: <30ms)`);
+                    }
+                    
+                    // Programar siguiente chunk
+                    if (window.requestIdleCallback) {
+                        requestIdleCallback(runDiagnosticsChunk2, { timeout: 1000 });
+                    }
+                };
+                
+                // Chunk 2: Verificar pestaña activa (sin getComputedStyle costoso)
+                const runDiagnosticsChunk2 = (deadline) => {
+                    if (deadline.timeRemaining() < 10) {
+                        if (window.requestIdleCallback) {
+                            requestIdleCallback(runDiagnosticsChunk2, { timeout: 1000 });
+                        }
+                        return;
+                    }
+                    
+                    const startTime = performance.now();
+                    const activeTab = window.TabManager?.activeTab || 'config';
+                    const elements = getCachedElements();
+                    
+                    // Buscar botón y contenido activo de forma eficiente
+                    let activeButton = null;
+                    let activeContent = null;
+                    for (let i = 0; i < elements.tabButtons.length && deadline.timeRemaining() > 2; i++) {
+                        if (elements.tabButtons[i].classList.contains('active')) {
+                            activeButton = elements.tabButtons[i];
+                            break;
+                        }
+                    }
+                    for (let i = 0; i < elements.tabContents.length && deadline.timeRemaining() > 2; i++) {
+                        if (elements.tabContents[i].classList.contains('active')) {
+                            activeContent = elements.tabContents[i];
+                            break;
+                        }
+                    }
+                    
+                    console.log('3️⃣ Pestaña activa:');
+                    console.log('   - TabManager.activeTab:', activeTab);
+                    console.log('   - Botón:', activeButton?.getAttribute('data-tab') || 'NINGUNO');
+                    console.log('   - Contenido:', activeContent?.id || 'NINGUNO');
+                    
+                    // ✅ OPTIMIZACIÓN: Solo verificar visibilidad si hay tiempo suficiente
+                    if (activeContent && deadline.timeRemaining() > 10) {
+                        // Verificar visibilidad de forma más eficiente (solo propiedades necesarias)
+                        const style = window.getComputedStyle(activeContent);
+                        const isVisible = style.display !== 'none' && 
+                                        style.opacity !== '0' && 
+                                        style.visibility !== 'hidden';
+                        console.log('4️⃣ Visibilidad:', isVisible ? '✅' : '❌');
+                        console.log('   - Display:', style.display);
+                        console.log('   - Opacity:', style.opacity);
+                    }
+                    
+                    const elapsed = performance.now() - startTime;
+                    if (elapsed > 30) {
+                        console.warn(`⚠️ Chunk 2 tomó ${elapsed.toFixed(2)}ms (objetivo: <30ms)`);
+                    }
+                    
+                    // Programar siguiente chunk
+                    if (window.requestIdleCallback) {
+                        requestIdleCallback(runDiagnosticsChunk3, { timeout: 1000 });
+                    }
+                };
+                
+                // Chunk 3: Verificar todas las pestañas (procesar en lotes MUY pequeños)
+                const runDiagnosticsChunk3 = (deadline) => {
+                    const expectedTabs = ['config', 'templates', 'pipeline', 'input', 'chain', 'results', 'learning', 'comparison', 'export'];
+                    let index = 0;
+                    
+                    // ✅ OPTIMIZACIÓN: Procesar máximo 2 pestañas por chunk para mantener <30ms
+                    const processNextBatch = (currentDeadline) => {
+                        const startTime = performance.now();
+                        const batchSize = 2; // Procesar solo 2 a la vez
+                        let processed = 0;
+                        
+                        if (index === 0) {
+                            console.log('5️⃣ Estado de pestañas:');
+                        }
+                        
+                        while (index < expectedTabs.length && 
+                               processed < batchSize && 
+                               currentDeadline.timeRemaining() > 5) {
+                            const tabId = expectedTabs[index];
+                            const content = document.getElementById(tabId);
+                            if (content) {
+                                // ✅ OPTIMIZACIÓN: Solo verificar display, no todas las propiedades
+                                const hasActive = content.classList.contains('active');
+                                const style = window.getComputedStyle(content);
+                                const isVisible = style.display !== 'none';
+                                console.log(`   - ${tabId}:`, {
+                                    activa: hasActive ? '✅' : '❌',
+                                    visible: isVisible ? '✅' : '❌'
+                                });
+                            }
+                            index++;
+                            processed++;
+                        }
+                        
+                        const elapsed = performance.now() - startTime;
+                        if (elapsed > 30) {
+                            console.warn(`⚠️ Batch tomó ${elapsed.toFixed(2)}ms (objetivo: <30ms)`);
+                        }
+                        
+                        if (index < expectedTabs.length) {
+                            // Programar siguiente lote pequeño
+                            if (window.requestIdleCallback) {
+                                requestIdleCallback(processNextBatch, { timeout: 1000 });
+                            }
+                        } else {
+                            console.log('\n═══════════════════════════════════════════════════════════\n');
+                        }
+                    };
+                    
+                    if (expectedTabs.length > 0) {
+                        processNextBatch(deadline);
+                    }
+                };
+                
+                // Iniciar diagnóstico en chunks (con delay mayor para no interferir con carga inicial)
+                if (window.requestIdleCallback) {
+                    // ✅ OPTIMIZACIÓN: Esperar más tiempo antes de iniciar para no interferir con carga
+                    setTimeout(() => {
+                        requestIdleCallback(runDiagnosticsChunk1, { timeout: 2000 });
+                    }, 3000);
+                } else {
+                    setTimeout(() => {
+                        runDiagnosticsChunk1({ timeRemaining: () => 50 });
+                        setTimeout(() => runDiagnosticsChunk2({ timeRemaining: () => 50 }), 100);
+                        setTimeout(() => runDiagnosticsChunk3({ timeRemaining: () => 50 }), 200);
+                    }, 3000);
+                }
+            }
+        } catch (error) {
+            console.error('❌ Error inicializando aplicación:', error);
+        }
+    }
+    
+    // ✅ OPTIMIZACIÓN: Usar Promise en lugar de polling ineficiente
+    // Los módulos ES6 se cargan de forma asíncrona, así que esperamos a que el import termine
+    function waitForModules() {
+        return new Promise((resolve) => {
+            // Si los módulos ya están disponibles, resolver inmediatamente
+            if (window.UI && window.TabManager && window.EventBinder) {
+                resolve();
+                return;
+            }
+            
+            // Usar MutationObserver para detectar cuando los módulos se agregan a window
+            // Esto es más eficiente que polling
+            const checkModules = () => {
+                if (window.UI && window.TabManager && window.EventBinder) {
+                    resolve();
+                    return true;
+                }
+                return false;
+            };
+            
+            // Verificar inmediatamente
+            if (checkModules()) return;
+            
+            // Configurar observer para cambios en window
+            let attempts = 0;
+            const maxAttempts = 100; // Timeout de seguridad: 10 segundos (100 * 100ms)
+            
+            const intervalId = setInterval(() => {
+                attempts++;
+                if (checkModules()) {
+                    clearInterval(intervalId);
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(intervalId);
+                    console.warn('⚠️ Timeout esperando módulos. Inicializando de todos modos...');
+                    console.warn('Módulos disponibles:', {
+                        UI: !!window.UI,
+                        TabManager: !!window.TabManager,
+                        EventBinder: !!window.EventBinder
+                    });
+                    resolve(); // Resolver de todos modos para no bloquear
+                }
+            }, 100);
+        });
+    }
+    
+    // ✅ OPTIMIZACIÓN: Inicializar cuando DOM y módulos estén listos
+    async function bootstrap() {
+        try {
+            // Esperar a que el DOM esté listo
+            if (document.readyState === 'loading') {
+                await new Promise(resolve => {
+                    document.addEventListener('DOMContentLoaded', resolve, { once: true });
+                });
+            }
+            
+            // Esperar a que los módulos estén disponibles
+            await waitForModules();
+            
+            console.log('✅ Todos los módulos están disponibles, inicializando...');
+            initializeApp();
+        } catch (error) {
+            console.error('❌ Error en bootstrap:', error);
+            // Intentar inicializar de todos modos
+            initializeApp();
+        }
+    }
+    
+    // Iniciar bootstrap
+    bootstrap();
+</script>
+</body>
+</html>

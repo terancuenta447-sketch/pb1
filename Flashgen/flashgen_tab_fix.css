@@ -1,0 +1,178 @@
+/**
+ * FIX DEFINITIVO: Layout de Tabs con Altura Fija
+ * 
+ * PROBLEMA: El contenedor .container colapsa cuando tabs tienen poco contenido,
+ * causando que aparezcan fuera del viewport.
+ * 
+ * SOLUCIÓN: Contenedor con altura fija basada en viewport + tabs absolutas
+ */
+
+/* ========================================
+   1. CONTENEDOR PRINCIPAL
+   ======================================== */
+
+.container {
+    /* Altura FIJA basada en viewport - NO en contenido */
+    min-height: 70vh !important;
+    height: auto !important;
+    
+    /* Posición relativa para tabs absolutas */
+    position: relative !important;
+    
+    /* Layout flexible normal */
+    display: flex !important;
+    flex-direction: column !important;
+    
+    /* Padding para evitar que contenido toque bordes */
+    padding: 20px !important;
+    
+    /* Evitar overflow accidental */
+    overflow: visible !important;
+}
+
+/* ========================================
+   2. WRAPPER DE TABS (si existe)
+   ======================================== */
+
+.tab-container,
+.tabs-wrapper {
+    /* Ocupar todo el espacio disponible */
+    flex: 1 !important;
+    
+    /* Posición relativa para tabs absolutas */
+    position: relative !important;
+    
+    /* Altura mínima garantizada */
+    min-height: 500px !important;
+    
+    /* Permitir scroll interno si contenido excede */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* ========================================
+   3. TABS (CONTENIDO)
+   ======================================== */
+
+.tab-content {
+    /* CRÍTICO: Posición absoluta para apilar sin afectar altura del padre */
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    
+    /* Ocupar ancho completo */
+    width: 100% !important;
+    
+    /* Altura mínima para contenido vacío */
+    min-height: 400px !important;
+    
+    /* Padding interno */
+    padding: 20px !important;
+    
+    /* Transición suave */
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+    
+    /* Ocultas por defecto */
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    
+    /* Z-index bajo por defecto */
+    z-index: 1 !important;
+}
+
+/* Tab activa */
+.tab-content.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    z-index: 10 !important;
+    
+    /* DESHABILITAR animación si causa problemas */
+    animation: none !important;
+}
+
+/* ========================================
+   4. MENSAJES DE ESTADO VACÍO
+   ======================================== */
+
+.empty-state {
+    /* Asegurar que mensajes vacíos tengan altura visible */
+    min-height: 100px !important;
+    padding: 40px 20px !important;
+    
+    /* Centrar texto */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    /* Estilo visual */
+    background: rgba(0, 0, 0, 0.02) !important;
+    border: 2px dashed rgba(0, 0, 0, 0.1) !important;
+    border-radius: 8px !important;
+    
+    /* Texto */
+    color: var(--color-text-secondary, #666) !important;
+    font-size: 14px !important;
+    text-align: center !important;
+}
+
+/* ========================================
+   5. ANIMACIONES (OPCIONAL - DESHABILITADAS)
+   ======================================== */
+
+/* Si quieres reactivar animaciones DESPUÉS de arreglar el layout,
+   descomenta esto y elimina "animation: none" de .tab-content.active */
+
+/*
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tab-content.active {
+    animation: slideInUp 0.3s ease !important;
+}
+*/
+
+/* ========================================
+   6. RESPONSIVE (MÓVIL)
+   ======================================== */
+
+@media (max-width: 768px) {
+    .container {
+        min-height: 60vh !important;
+        padding: 15px !important;
+    }
+    
+    .tab-content {
+        min-height: 300px !important;
+        padding: 15px !important;
+    }
+}
+
+/* ========================================
+   7. DEBUG: Visualizar tabs en desarrollo
+   ======================================== */
+
+/* Descomenta para debugging - muestra bordes de todas las tabs */
+/*
+.tab-content {
+    border: 2px solid red !important;
+}
+
+.tab-content.active {
+    border: 2px solid green !important;
+}
+
+.container {
+    border: 3px solid blue !important;
+}
+*/

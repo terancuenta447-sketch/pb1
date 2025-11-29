@@ -1,0 +1,1088 @@
+:root {
+    --color-white: #ffffff;
+    --color-black: #09090b;
+    --color-cream-50: #2b2d31;
+    --color-cream-100: #1e1f22;
+    --color-gray-200: #dfe1e5;
+    --color-gray-300: #b4b6ba;
+    --color-gray-400: #8a8d91;
+    --color-slate-500: #5f6266;
+    --color-brown-600: #3d3f43;
+    --color-charcoal-700: #2e3035;
+    --color-charcoal-800: #1f2023;
+    --color-slate-900: #101113;
+    --color-teal-300: #7ab8d9;
+    --color-teal-400: #5a9fc7;
+    --color-teal-500: #4a8bb5;
+    --color-teal-600: #3a7ba0;
+    --color-teal-700: #2d6485;
+    --color-teal-800: #234f6b;
+    --color-red-400: #be123c;
+    --color-red-500: #9f1239;
+    --color-orange-400: #fb923c;
+    --color-orange-500: #f97316;
+    --color-brown-600-rgb: 75, 85, 99;
+    --color-teal-500-rgb: 74, 139, 181;
+    --color-slate-900-rgb: 15, 23, 42;
+    --color-slate-500-rgb: 95, 98, 102;
+    --color-red-500-rgb: 159, 18, 57;
+    --color-red-400-rgb: 190, 18, 60;
+    --color-orange-500-rgb: 249, 115, 22;
+    --color-orange-400-rgb: 251, 146, 60;
+    --color-bg-1: rgba(74, 139, 181, 0.08);
+    --color-bg-2: rgba(159, 18, 57, 0.06);
+    --color-bg-3: rgba(95, 164, 124, 0.08);
+    --color-bg-4: rgba(159, 18, 57, 0.07);
+    --color-bg-5: rgba(138, 107, 184, 0.06);
+    --color-bg-6: rgba(204, 153, 51, 0.06);
+    --color-bg-7: rgba(159, 18, 57, 0.05);
+    --color-bg-8: rgba(74, 139, 181, 0.06);
+    --color-background: #2b2d31;
+    --color-surface: #1e1f22;
+    --color-text: #dfe1e5;
+    --color-text-secondary: #8a8d91;
+    --color-primary: #4a8bb5;
+    --color-primary-hover: #5a9fc7;
+    --color-primary-active: #3a7ba0;
+    --color-secondary: #2e3035;
+    --color-secondary-hover: #3d3f43;
+    --color-secondary-active: #4a4c50;
+    --color-border: #3d3f43;
+    --color-btn-primary-text: #ffffff;
+    --color-card-border: rgba(74, 139, 181, 0.15);
+    --color-card-border-inner: rgba(74, 139, 181, 0.08);
+    --color-error: var(--color-red-500);
+    --color-success: #5fa47c;
+    --color-warning: var(--color-orange-500);
+    --color-info: var(--color-slate-500);
+    --color-focus-ring: rgba(74, 139, 181, 0.4);
+    --color-select-caret: #8a8d91;
+    --focus-ring: 0 0 0 3px var(--color-focus-ring);
+    --focus-outline: 2px solid var(--color-primary);
+    --status-bg-opacity: 0.15;
+    --status-border-opacity: 0.25;
+    --color-success-rgb: 95, 164, 124;
+    --color-error-rgb: 159, 18, 57;
+    --color-warning-rgb: 249, 115, 22;
+    --color-info-rgb: 74, 139, 181;
+    --font-family-base: "Geist", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-family-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-md: 1.125rem;
+    --font-size-lg: 1.25rem;
+    --font-size-xl: 1.5rem;
+    --font-size-2xl: 1.875rem;
+    --font-size-3xl: 2.25rem;
+    --font-size-4xl: 3rem;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.5;
+    --letter-spacing-tight: -0.025em;
+    --space-0: 0;
+    --space-1: 0.0625rem;
+    --space-2: 0.125rem;
+    --space-4: 0.25rem;
+    --space-6: 0.375rem;
+    --space-8: 0.5rem;
+    --space-10: 0.625rem;
+    --space-12: 0.75rem;
+    --space-16: 1rem;
+    --space-20: 1.25rem;
+    --space-24: 1.5rem;
+    --space-32: 2rem;
+    --radius-sm: 0.375rem;
+    --radius-base: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-full: 9999px;
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+    --shadow-inset-sm: inset 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --container-sm: 640px;
+    --container-md: 768px;
+    --container-lg: 1024px;
+    --container-xl: 1280px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-gray-400-rgb: 138, 141, 145;
+        --color-teal-300-rgb: 122, 184, 217;
+        --color-gray-300-rgb: 180, 182, 186;
+        --color-gray-200-rgb: 223, 225, 229;
+        --color-bg-1: rgba(74, 139, 181, 0.12);
+        --color-bg-2: rgba(159, 18, 57, 0.1);
+        --color-bg-3: rgba(95, 164, 124, 0.12);
+        --color-bg-4: rgba(159, 18, 57, 0.12);
+        --color-bg-5: rgba(138, 107, 184, 0.1);
+        --color-bg-6: rgba(204, 153, 51, 0.1);
+        --color-bg-7: rgba(159, 18, 57, 0.08);
+        --color-bg-8: rgba(74, 139, 181, 0.1);
+        --color-background: #1a1b1e;
+        --color-surface: #101113;
+        --color-text: #dfe1e5;
+        --color-text-secondary: rgba(180, 182, 186, 0.85);
+        --color-primary: #5a9fc7;
+        --color-primary-hover: #7ab8d9;
+        --color-primary-active: #4a8bb5;
+        --color-secondary: rgba(95, 98, 102, 0.2);
+        --color-secondary-hover: rgba(95, 98, 102, 0.3);
+        --color-secondary-active: rgba(95, 98, 102, 0.4);
+        --color-border: rgba(74, 139, 181, 0.3);
+        --color-error: var(--color-red-400);
+        --color-success: #5fa47c;
+        --color-warning: var(--color-orange-400);
+        --color-info: #5a9fc7;
+        --color-focus-ring: rgba(74, 139, 181, 0.5);
+        --color-btn-primary-text: #ffffff;
+        --color-card-border: rgba(74, 139, 181, 0.25);
+        --color-card-border-inner: rgba(74, 139, 181, 0.15);
+        --shadow-inset-sm: inset 0 1px 0 rgba(74, 139, 181, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        --color-border-secondary: rgba(74, 139, 181, 0.2);
+        --color-select-caret: rgba(223, 225, 229, 0.85);
+        --color-success-rgb: 95, 164, 124;
+        --color-error-rgb: var(--color-red-400-rgb);
+        --color-warning-rgb: var(--color-orange-400-rgb);
+        --color-info-rgb: 90, 159, 199;
+    }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    color: var(--color-text);
+    background: radial-gradient(ellipse at top, rgba(74, 139, 181, 0.08), var(--color-background) 50%), var(--color-background);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.container {
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    padding: var(--space-16);
+    /* ✅ SOLUCIÓN DEFINITIVA: Altura fija basada en viewport, no en contenido */
+    min-height: 70vh !important;
+    min-width: 300px;
+    /* Usar flexbox para que los hijos definan la dimensión de forma estable */
+    display: flex !important;
+    flex-direction: column;
+    /* ✅ CRÍTICO: Necesario para position: absolute en .tab-content */
+    position: relative;
+    /* ✅ FIX: Asegurar que overflow no oculte contenido */
+    overflow: visible;
+    overflow-x: visible;
+    overflow-y: visible;
+}
+
+/* ✅ CRÍTICO: Protección adicional - Sobrescribir cualquier estilo inline incorrecto */
+.container[style*="display"] {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* ✅ CRÍTICO: Máxima especificidad para prevenir display: none */
+body > .container,
+html body > .container,
+div.container {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* ✅ CRÍTICO: Asegurar que las tabs activas tengan espacio en el contenedor flex */
+.container > .tab-content.active {
+    flex: 1 1 auto !important;
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
+    flex-basis: auto !important;
+    min-height: 400px !important;
+    height: auto !important;
+    /* ✅ Forzar que el contenido tenga espacio para crecer */
+    overflow: visible !important;
+}
+
+.header {
+    position: relative;
+    z-index: 50;
+    padding: var(--space-32);
+    margin-bottom: var(--space-24);
+    background: linear-gradient(135deg, rgba(74, 139, 181, 0.15), rgba(95, 164, 124, 0.12));
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(74, 139, 181, 0.2);
+    box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    /* ✅ Asegurar que header no crezca en flex */
+    flex-shrink: 0;
+}
+
+.header h1 {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-8);
+    background: linear-gradient(135deg, #7ab8d9, #5fa47c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.header p {
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+}
+
+.tabs {
+    display: flex;
+    gap: var(--space-4);
+    border-bottom: 2px solid rgba(74, 139, 181, 0.3);
+    margin-bottom: var(--space-24);
+    overflow-x: auto;
+    position: relative;
+    z-index: 100;
+    padding: var(--space-4) 0;
+    background: linear-gradient(to bottom, transparent, rgba(74, 139, 181, 0.05));
+    /* ✅ Asegurar que tabs estén por encima de tab-content y no crezcan en flex */
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.tab-btn {
+    padding: var(--space-12) var(--space-20);
+    border: none;
+    background: rgba(74, 139, 181, 0.03);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    border-radius: var(--radius-base) var(--radius-base) 0 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(74, 139, 181, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.tab-btn:hover::before {
+    left: 100%;
+}
+
+.tab-btn:hover {
+    color: var(--color-text);
+    background: rgba(74, 139, 181, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 139, 181, 0.2);
+}
+
+.tab-btn.active {
+    color: #7ab8d9;
+    background: linear-gradient(to top, rgba(74, 139, 181, 0.2), transparent);
+    border-bottom-color: var(--color-primary);
+    box-shadow: 0 2px 8px rgba(74, 139, 181, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+    font-weight: var(--font-weight-semibold);
+}
+
+.tab-content {
+    /* ✅ SOLUCIÓN DEFINITIVA: CSS simple sin !important para evitar batallas de especificidad */
+    display: none;
+    opacity: 0;
+    min-height: 400px;
+    width: 100%;
+    /* ✅ Asegurar que el contenido tenga altura incluso si está oculto */
+    position: relative;
+    /* ✅ Asegurar que el contenido tenga flex para crecer */
+    flex: 1;
+}
+
+/* ✅ CRÍTICO: CSS simple - sin !important para que JavaScript pueda sobrescribir si es necesario */
+.tab-content.active,
+div.tab-content.active,
+.container .tab-content.active {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    /* ✅ Asegurar que esté por encima de elementos con z-index bajo pero no interfiera con tabs (100) */
+    z-index: 10;
+    /* ✅ Asegurar altura mínima y que crezca dentro del contenedor flex */
+    min-height: 400px;
+    height: auto;
+    flex: 1;
+    /* ✅ Asegurar que el contenido interno tenga espacio */
+    overflow: visible;
+    /* ✅ Deshabilitar animaciones temporalmente para evitar problemas de layout */
+    animation: none;
+    transform: none;
+}
+
+/* Tabs para modales de chain-refinement */
+.tab-content-chain {
+    display: none;
+}
+
+.tab-content-gen {
+    display: none;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+        /* ✅ FIX: Asegurar que min-height se mantenga durante toda la animación */
+        min-height: 400px;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        /* ✅ FIX: Mantener min-height al final de la animación */
+        min-height: 400px;
+    }
+}
+
+.card {
+    background: linear-gradient(135deg, var(--color-surface), rgba(74, 139, 181, 0.02));
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-20);
+    margin-bottom: var(--space-20);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(74, 139, 181, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-success));
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(74, 139, 181, 0.15);
+    border-color: rgba(74, 139, 181, 0.4);
+    transform: translateY(-2px);
+}
+
+.card:hover::after {
+    opacity: 1;
+}
+
+.card h3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-16);
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+.card h3::before {
+    content: '';
+    width: 3px;
+    height: 18px;
+    background: var(--color-primary);
+    border-radius: var(--radius-full);
+}
+
+.form-group {
+    margin-bottom: var(--space-16);
+}
+
+.form-label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--space-8);
+    color: var(--color-text);
+}
+
+.form-control {
+    width: 100%;
+    padding: var(--space-8) var(--space-12);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-base);
+    background: var(--color-background);
+    color: var(--color-text);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family-base);
+    transition: border-color var(--duration-fast);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-ring), 0 0 0 4px rgba(74, 139, 181, 0.1);
+    transform: scale(1.01);
+    background: rgba(74, 139, 181, 0.03);
+}
+
+textarea.form-control {
+    min-height: 200px;
+    font-family: var(--font-family-base);
+    resize: vertical;
+}
+
+/* ✅ CRÍTICO: Textarea de Input con altura aumentada para igualar Templates */
+#inputText {
+    min-height: 300px !important;
+    height: auto !important;
+}
+
+select.form-control {
+    cursor: pointer;
+}
+
+.btn {
+    padding: var(--space-8) var(--space-16);
+    border: none;
+    border-radius: var(--radius-base);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-standard);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-8);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), #5fa47c);
+    color: var(--color-btn-primary-text);
+    box-shadow: 0 4px 12px rgba(74, 139, 181, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+    border: 1px solid rgba(74, 139, 181, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a9fc7, #6bb58a);
+    box-shadow: 0 8px 24px rgba(74, 139, 181, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+    transform: translateY(-2px) scale(1.02);
+}
+
+.btn-secondary {
+    background: var(--color-secondary);
+    color: var(--color-text);
+}
+
+.btn-secondary:hover {
+    background: var(--color-secondary-hover);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--color-success), #6bb58a);
+    color: var(--color-btn-primary-text);
+    box-shadow: 0 4px 12px rgba(95, 164, 124, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+    border: 1px solid rgba(95, 164, 124, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #6bb58a, #7ac69a);
+    box-shadow: 0 8px 24px rgba(95, 164, 124, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+    transform: translateY(-2px) scale(1.02);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+.btn-outline:hover {
+    background: var(--color-secondary);
+}
+
+.btn-sm {
+    padding: var(--space-4) var(--space-12);
+    font-size: var(--font-size-xs);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-group {
+    display: flex;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.pipeline-steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.pipeline-step {
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    padding: var(--space-12);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-primary);
+    border-radius: var(--radius-base);
+    cursor: move;
+    transition: all var(--duration-fast);
+    box-shadow: var(--shadow-xs);
+}
+
+.pipeline-step:hover {
+    background: linear-gradient(to right, rgba(74, 139, 181, 0.1), var(--color-secondary));
+    transform: translateX(4px) scale(1.01);
+    box-shadow: var(--shadow-md), 0 0 15px rgba(74, 139, 181, 0.2);
+    border-left-width: 4px;
+}
+
+.pipeline-step.inactive {
+    opacity: 0.5;
+}
+
+.pipeline-step .drag-handle {
+    cursor: grab;
+    color: var(--color-text-secondary);
+}
+
+.pipeline-step .step-checkbox {
+    width: 20px;
+    height: 20px;
+}
+
+.pipeline-step .step-name {
+    flex: 1;
+    font-weight: var(--font-weight-medium);
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-20);
+}
+
+.few-shot-example {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-base);
+    padding: 12px;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.few-shot-example.positive {
+    border-left: 2px solid var(--color-success);
+}
+
+.few-shot-example.negative {
+    border-left: 3px solid var(--color-error);
+}
+
+.few-shot-example input,
+.few-shot-example textarea {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.few-shot-example .remove-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.few-shot-example label {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+    display: block;
+}
+
+.flashcard {
+    background: linear-gradient(to bottom right, var(--color-surface), rgba(74, 139, 181, 0.03));
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-16);
+    margin-bottom: var(--space-12);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-xs), inset 0 1px 0 rgba(74, 139, 181, 0.05);
+}
+
+.flashcard::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--color-border);
+    transition: background var(--duration-fast);
+}
+
+.flashcard:hover {
+    box-shadow: var(--shadow-lg), 0 0 25px rgba(74, 139, 181, 0.2);
+    transform: translateY(-4px) scale(1.01);
+    border-color: rgba(74, 139, 181, 0.4);
+}
+
+.flashcard.approved {
+    border-color: var(--color-success);
+    background: var(--color-bg-3);
+}
+
+.flashcard.approved::before {
+    background: var(--color-success);
+}
+
+.flashcard.rejected {
+    border-color: var(--color-error);
+    background: var(--color-bg-4);
+}
+
+.flashcard.rejected::before {
+    background: var(--color-error);
+}
+
+.flashcard-question {
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-8);
+}
+
+.flashcard-answer {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-12);
+}
+
+.flashcard-actions {
+    display: flex;
+    gap: var(--space-8);
+}
+
+.stats {
+    display: flex;
+    gap: var(--space-24);
+    padding: var(--space-20);
+    background: linear-gradient(135deg, var(--color-bg-1), var(--color-bg-2));
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-20);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-12);
+    background: var(--color-surface);
+    border-radius: var(--radius-base);
+    flex: 1;
+    min-width: 100px;
+    transition: all var(--duration-fast);
+}
+
+.stat-item:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-md), 0 0 20px rgba(74, 139, 181, 0.15);
+    border: 1px solid rgba(74, 139, 181, 0.3);
+}
+
+.stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-value {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    background: linear-gradient(135deg, #7ab8d9, #5fa47c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--color-secondary);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin: var(--space-16) 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-success));
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+    transition: width var(--duration-normal);
+    box-shadow: 0 0 10px rgba(74, 139, 181, 0.5);
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.toast {
+    position: fixed;
+    bottom: var(--space-20);
+    right: var(--space-20);
+    background: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-base);
+    padding: var(--space-12) var(--space-16);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.code-block {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-base);
+    padding: var(--space-16);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.chunk-preview {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.chunk-item {
+    padding: var(--space-12);
+    background: var(--color-surface);
+    border-left: 2px solid var(--color-primary);
+    border-radius: var(--radius-base);
+    margin-bottom: var(--space-8);
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--color-border);
+}
+
+.chain-step {
+    background: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--space-12);
+}
+
+.chain-step-header {
+    padding: var(--space-16);
+    background: var(--color-secondary);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.chain-step-body {
+    padding: var(--space-16);
+    display: none;
+}
+
+.chain-step.expanded .chain-step-body {
+    display: block;
+}
+
+.memory-item {
+    padding: var(--space-12);
+    background: var(--color-surface);
+    border-left: 2px solid var(--color-border);
+    border-radius: var(--radius-base);
+    margin-bottom: var(--space-8);
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--color-border);
+}
+
+.memory-item.user {
+    border-left-color: var(--color-primary);
+}
+
+.memory-item.assistant {
+    border-left-color: var(--color-success);
+}
+
+.tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-12);
+}
+
+.tool-item {
+    padding: var(--space-16);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-base);
+    text-align: center;
+    transition: all var(--duration-fast);
+}
+
+.tool-item:hover {
+    border-color: var(--color-primary);
+    background: var(--color-bg-1);
+}
+
+.tool-icon {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-8);
+}
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-20);
+}
+
+.comparison-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-16);
+}
+
+.comparison-card h4 {
+    margin-bottom: var(--space-12);
+}
+
+.slider-container {
+    margin-bottom: var(--space-16);
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-8);
+}
+
+.slider {
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-secondary);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+    border: none;
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--space-32);
+    color: var(--color-text-secondary);
+    /* ✅ SOLUCIÓN DEFINITIVA: Altura mínima para mensajes visibles */
+    min-height: 100px !important;
+    /* ✅ Garantizar que los placeholders tengan estructura visible */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* ✅ Estandarización de pestañas: Altura mínima para Results */
+#results .stats {
+    min-height: 150px !important;
+}
+
+#results .card {
+    min-height: 200px !important;
+}
+
+/* ✅ Estandarización de pestañas: Altura mínima para Learning */
+#learning .card {
+    min-height: 250px !important;
+}
+
+/* ✅ Estandarización de pestañas: Altura mínima para Comparison */
+#comparison .card {
+    min-height: 250px !important;
+}
+
+/* ✅ Estandarización de pestañas: Altura mínima para Chain */
+#chain .card {
+    min-height: 250px !important;
+}
+
+/* ✅ CRÍTICO: Reglas específicas para Input tab - igualar altura base de Templates */
+#input {
+    /* Asegurar que el contenedor de Input tenga altura suficiente */
+    min-height: 400px !important;
+}
+
+/* ✅ Textarea de Input con altura aumentada (300px) para igualar Templates (2×200px=400px) */
+#inputText {
+    min-height: 300px !important;
+    height: auto !important;
+    /* Asegurar que el textarea tenga padding y estructura visible */
+    padding: var(--space-12) !important;
+}
+
+/* ✅ Grid de estadísticas con altura mínima aumentada */
+#inputStats {
+    min-height: 100px !important;
+    padding: var(--space-16) 0 !important;
+    /* Asegurar que el grid tenga estructura visible */
+    margin-top: var(--space-16) !important;
+}
+
+/* ✅ Items de estadísticas con altura mínima aumentada */
+#inputStats .stat-item {
+    min-height: 80px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: var(--space-16) !important;
+    background: var(--color-bg-1) !important;
+    border-radius: var(--radius-base) !important;
+    /* Asegurar que los stats tengan estructura visible incluso con valores "0" */
+    border: 1px solid var(--color-border) !important;
+}
+
+/* ✅ Vista previa de chunks con altura mínima aumentada */
+#chunkPreview {
+    min-height: 150px !important;
+    padding: var(--space-20) !important;
+    /* Asegurar que el preview tenga estructura visible */
+    background: var(--color-bg-1) !important;
+    border-radius: var(--radius-base) !important;
+    border: 1px solid var(--color-border) !important;
+}
+
+/* ✅ Cards dentro de Input con altura mínima aumentada */
+#input .card {
+    min-height: 180px !important;
+    margin-bottom: var(--space-16) !important;
+    /* Asegurar que las cards tengan padding suficiente */
+    padding: var(--space-20) !important;
+}
+
+/* ✅ Asegurar que el contenedor de segmentación tenga altura aumentada */
+#input #heuristicPanel,
+#input #spacyPanel {
+    min-height: 150px !important;
+    padding: var(--space-16) 0 !important;
+}
+
+/* ✅ Card de Input Text específicamente con más altura */
+#input .card:has(#inputText) {
+    min-height: 450px !important; /* 300px textarea + 100px stats + padding */
+}
+
+.hidden {
+    display: none !important;
+}
