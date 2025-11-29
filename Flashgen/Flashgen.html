@@ -115,20 +115,14 @@
             </button>
         </div>
 
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="config"><i class="ri-settings-3-line"></i> Configuracion</button>
-            <button class="tab-btn" data-tab="templates"><i class="ri-file-list-3-line"></i> Plantillas</button>
-            <button class="tab-btn" data-tab="pipeline"><i class="ri-node-tree"></i> Pipeline</button>
-            <button class="tab-btn" data-tab="input"><i class="ri-edit-2-line"></i> Entrada</button>
-            <button class="tab-btn" data-tab="chain"><i class="ri-links-line"></i> Cadena</button>
-            <button class="tab-btn" data-tab="results"><i class="ri-bar-chart-box-line"></i> Resultados</button>
-            <button class="tab-btn" data-tab="learning"><i class="ri-graduation-cap-line"></i> Aprendizaje</button>
-            <button class="tab-btn" data-tab="comparison"><i class="ri-scales-3-line"></i> Comparacion</button>
-            <button class="tab-btn" data-tab="export"><i class="ri-save-3-line"></i> Exportar</button>
-        </div>
+        <!-- Sidebar (generado dinámicamente por TabManager.generateSidebar()) -->
+        <div id="sidebar"></div>
 
-        <!-- CONFIG TAB -->
-        <div class="tab-content active" id="config">
+        <!-- Main content area con scroll vertical -->
+        <main id="main">
+
+        <!-- CONFIG SECTION -->
+        <section class="section-content" id="config">
             <div class="card">
                 <form id="apiConfigForm" autocomplete="off" style="display: contents;">
                 <h3><i class="ri-plug-line"></i> API Configuration</h3>
@@ -259,10 +253,10 @@
                     <i class="ri-terminal-line"></i> Logs de herramientas apareceran aqui
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- TEMPLATES TAB -->
-        <div class="tab-content" id="templates">
+        <!-- TEMPLATES SECTION -->
+        <section class="section-content" id="templates">
             <div class="card">
                 <h3><i class="ri-file-list-3-line"></i> Template Manager</h3>
                 <div class="form-group">
@@ -537,10 +531,10 @@
                 </div>
             </div>
 
-        </div>
+        </section>
 
-        <!-- PIPELINE TAB -->
-        <div class="tab-content" id="pipeline">
+        <!-- PIPELINE SECTION -->
+        <section class="section-content" id="pipeline">
             <!-- EDITOR DE PIPELINE -->
             <div class="card">
                 <h3>🔧 Editable Pipeline</h3>
@@ -637,10 +631,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- INPUT TAB -->
-        <div class="tab-content" id="input">
+        <!-- INPUT SECTION -->
+        <section class="section-content" id="input">
             <div class="card">
                 <h3>📋 Importar Contenido</h3>
                 <div class="btn-group" style="margin-bottom: 16px;">
@@ -864,10 +858,10 @@ Formatos soportados:
                     <div class="progress-fill" id="progressFill" style="width: 0%"></div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- CHAIN TAB -->
-        <div class="tab-content" id="chain">
+        <!-- CHAIN SECTION -->
+        <section class="section-content" id="chain">
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                     <h3 style="margin: 0;">⛓️ Visualización de Cadena (LangChain)</h3>
@@ -892,10 +886,10 @@ Formatos soportados:
                     <p class="empty-state">La información detallada de la cadena aparecerá aquí cuando se active el modo Chain.</p>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- RESULTS TAB -->
-        <div class="tab-content" id="results">
+        <!-- RESULTS SECTION -->
+        <section class="section-content" id="results">
             <div class="card">
                 <h3>📈 Estadísticas de Generación</h3>
                 <div class="stats" id="resultsStats">
@@ -935,10 +929,10 @@ Formatos soportados:
                     <p class="empty-state">Las tarjetas generadas apareceran aqui</p>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- LEARNING TAB -->
-        <div class="tab-content" id="learning">
+        <!-- LEARNING SECTION -->
+        <section class="section-content" id="learning">
             <div class="card">
                 <h3>🧠 Análisis de Aprendizaje</h3>
                 <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Analisis de tokens y razonamiento del modelo</p>
@@ -959,10 +953,10 @@ Formatos soportados:
                     <p class="empty-state">Las métricas de rendimiento aparecerán aquí después del análisis de tokens.</p>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- COMPARISON TAB -->
-        <div class="tab-content" id="comparison">
+        <!-- COMPARISON SECTION -->
+        <section class="section-content" id="comparison">
             <div class="card">
                 <h3>⚖️ Comparación de Modos</h3>
                 <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Compara el rendimiento entre generación determinista y estocástica (creatividad alta vs baja).</p>
@@ -978,10 +972,10 @@ Formatos soportados:
                     <p class="empty-state">El análisis comparativo detallado aparecerá aquí después de ejecutar la comparación.</p>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- EXPORT TAB -->
-        <div class="tab-content" id="export">
+        <!-- EXPORT SECTION -->
+        <section class="section-content" id="export">
             <div class="card">
                 <h3>📤 Exportar Flashcards</h3>
                 <div class="form-group">
@@ -1003,9 +997,10 @@ Formatos soportados:
                 <h3>👁️ Vista Previa</h3>
                 <div class="code-block" id="exportPreview">Selecciona un formato para ver la vista previa...</div>
             </div>
-        </div>
-    </div>
-</div>
+        </section>
+
+        </main><!-- Cierre de main -->
+    </div><!-- Cierre de container -->
 
 <!-- Debug Console -->
 <div id="debugConsole" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 300px; background: var(--color-charcoal-800); border-top: 2px solid var(--color-primary); z-index: 9999; padding: 16px; overflow-y: auto; font-family: var(--font-family-mono); font-size: 11px; color: var(--color-gray-200);">

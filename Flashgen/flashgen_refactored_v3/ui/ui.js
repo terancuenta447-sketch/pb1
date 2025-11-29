@@ -86,12 +86,26 @@ const UI = {
                 console.log('🔧 Inicializando componentes de UI...');
                 console.log('📋 Orden de inicialización: TabManager → DomCache → EventBinder → switchTab');
                 
-                // ✅ PASO 1: Inicializar TabManager y cachear pestañas PRIMERO
+                // ✅ PASO 1: Inicializar TabManager y generar sidebar PRIMERO
                 // Esto debe hacerse ANTES de vincular eventos para que los botones estén cacheados
                 if (TabManager) {
-                    console.log('📋 [1/4] Cacheando pestañas en TabManager...');
-                    TabManager.cacheTabs();
-                    
+                    console.log('📋 [1/5] Generando sidebar dinámicamente...');
+
+                    // Generar sidebar desde SECTIONS si existe el elemento #sidebar
+                    if (typeof TabManager.generateSidebar === 'function') {
+                        const sidebarGenerated = TabManager.generateSidebar();
+                        if (sidebarGenerated) {
+                            console.log('✅ Sidebar generado correctamente');
+                        } else {
+                            console.warn('⚠️ No se pudo generar sidebar (puede estar usando sistema antiguo)');
+                            // Intentar cachear tabs del sistema antiguo
+                            TabManager.cacheTabs();
+                        }
+                    } else {
+                        console.warn('⚠️ TabManager.generateSidebar no disponible, usando sistema antiguo');
+                        TabManager.cacheTabs();
+                    }
+
                     // Validar que se encontraron todas las pestañas
                     if (TabManager.tabButtons && TabManager.tabButtons.length === 9) {
                         console.log('✅ TabManager: Todas las 9 pestañas cacheadas correctamente');
@@ -100,11 +114,11 @@ const UI = {
                         // Intentar re-cacheo forzado
                         console.log('🔄 Intentando re-cacheo forzado...');
                         TabManager.cacheTabs();
-                        
+
                         // Si aún no hay 9, hay un problema serio
                         if (TabManager.tabButtons && TabManager.tabButtons.length !== 9) {
                             console.error(`❌ CRÍTICO: Después de re-cacheo, solo ${TabManager.tabButtons.length}/9 pestañas encontradas`);
-                            console.error('❌ Verifica que el HTML tiene los 9 botones con clase .tab-btn y data-tab');
+                            console.error('❌ Verifica que el HTML tiene los 9 botones con clase .tab-btn/.sidebar-btn y data-tab/data-go');
                         }
                     }
                 } else {
@@ -114,7 +128,7 @@ const UI = {
                 // ✅ PASO 2: Inicializar DomCache
                 // Esto debe hacerse DESPUÉS de cachear pestañas pero ANTES de vincular eventos
                 if (DomCache) {
-                    console.log('📋 [2/4] Refrescando DomCache...');
+                    console.log('📋 [2/5] Refrescando DomCache...');
                     DomCache.refresh();
                     console.log('✅ DomCache inicializado');
                 } else {
@@ -125,15 +139,15 @@ const UI = {
                 // Esto debe hacerse DESPUÉS de que TabManager y DomCache estén listos
                 // para que los botones estén cacheados y disponibles
                 if (EventBinder) {
-                    console.log('📋 [3/4] Vinculando eventos...');
-                    
+                    console.log('📋 [3/5] Vinculando eventos...');
+
                     // Verificar que TabManager tiene botones antes de vincular
                     if (!TabManager.tabButtons || TabManager.tabButtons.length === 0) {
                         console.error('❌ CRÍTICO: No hay botones cacheados antes de vincular eventos');
                         console.error('❌ Re-cacheando pestañas...');
                         TabManager.cacheTabs();
                     }
-                    
+
                     const bindResult = EventBinder.bindAll();
                     if (bindResult) {
                         console.log('✅ EventBinder: Todos los eventos vinculados correctamente');
@@ -148,7 +162,7 @@ const UI = {
                 // ✅ PASO 4: Activar pestaña inicial
                 // Esto debe hacerse AL FINAL, después de que todo esté vinculado
                 if (TabManager) {
-                    console.log('📋 [4/4] Activando pestaña inicial...');
+                    console.log('📋 [4/5] Activando pestaña inicial...');
                     const initialTab = this.activeTab || 'config';
                     TabManager.switchTab(initialTab);
                     console.log(`✅ Pestaña inicial activada: ${initialTab}`);

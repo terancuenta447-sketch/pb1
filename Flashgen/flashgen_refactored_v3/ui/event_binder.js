@@ -123,10 +123,10 @@ export const EventBinder = {
                         return;
                     }
                     
-                    // Validación 5b: Botón tiene data-tab
-                    const tabId = button.getAttribute('data-tab');
+                    // Validación 5b: Botón tiene data-go o data-tab (compatibilidad con ambos sistemas)
+                    const tabId = button.getAttribute('data-go') || button.getAttribute('data-tab');
                     if (!tabId) {
-                        console.error(`  [${index}] ❌ Sin atributo data-tab`);
+                        console.error(`  [${index}] ❌ Sin atributo data-go ni data-tab`);
                         console.error(`         Elemento:`, button);
                         errorCount++;
                         return;
@@ -205,25 +205,24 @@ export const EventBinder = {
                             
                             // ✅ VERIFICACIÓN POST-SWITCH: Verificar que realmente cambió
                             setTimeout(() => {
-                                const activeContent = document.querySelector('.tab-content.active');
-                                const activeBtn = document.querySelector('.tab-btn.active');
-                                const expectedContent = document.getElementById(tabId);
-                                
+                                const activeBtn = document.querySelector('#sidebar button.active, .tab-btn.active');
+                                const expectedSection = document.getElementById(tabId);
+
                                 console.log(`\n📊 Estado DESPUÉS de switchTab("${tabId}"):`);
-                                console.log(`   - Contenido activo: ${activeContent?.id || 'NINGUNO'}`);
-                                console.log(`   - Botón activo: ${activeBtn?.getAttribute('data-tab') || 'NINGUNO'}`);
-                                console.log(`   - Contenido esperado (${tabId}):`, expectedContent ? 'EXISTE' : 'NO EXISTE');
-                                if (expectedContent) {
-                                    console.log(`   - Tiene clase active: ${expectedContent.classList.contains('active')}`);
-                                    console.log(`   - Display computed: ${window.getComputedStyle(expectedContent).display}`);
-                                    console.log(`   - Opacity computed: ${window.getComputedStyle(expectedContent).opacity}`);
+                                console.log(`   - Botón activo: ${activeBtn?.getAttribute('data-go') || activeBtn?.getAttribute('data-tab') || 'NINGUNO'}`);
+                                console.log(`   - Sección esperada (${tabId}):`, expectedSection ? 'EXISTE' : 'NO EXISTE');
+                                if (expectedSection) {
+                                    const rect = expectedSection.getBoundingClientRect();
+                                    console.log(`   - Posición en viewport: top=${rect.top.toFixed(0)}px`);
+                                    console.log(`   - Visible: ${rect.top >= 0 && rect.top < window.innerHeight ? 'SÍ' : 'NO'}`);
                                 }
-                                
-                                if (activeContent?.id === tabId) {
-                                    console.log(`✅ switchTab("${tabId}") EXITOSO - pestaña activada correctamente`);
+
+                                if (activeBtn && expectedSection) {
+                                    console.log(`✅ switchTab("${tabId}") EXITOSO - sección activada y visible`);
                                 } else {
-                                    console.error(`❌ switchTab("${tabId}") FALLÓ - pestaña NO activada`);
-                                    console.error(`   Esperado: ${tabId}, Obtenido: ${activeContent?.id || 'NINGUNO'}`);
+                                    console.error(`❌ switchTab("${tabId}") FALLÓ`);
+                                    if (!activeBtn) console.error(`   - Botón activo no encontrado`);
+                                    if (!expectedSection) console.error(`   - Sección ${tabId} no existe`);
                                 }
                                 console.log(`🎯 ========== FIN CLICK EN "${tabId}" ==========\n`);
                             }, 100);
@@ -334,7 +333,7 @@ export const EventBinder = {
             let validButtonsCount = 0;
             const validButtons = [];
             TabManager.tabButtons.forEach((btn, i) => {
-                const tabId = btn.getAttribute('data-tab');
+                const tabId = btn.getAttribute('data-go') || btn.getAttribute('data-tab');
                 if (tabId && expectedTabs.includes(tabId)) {
                     validButtonsCount++;
                     validButtons.push(tabId);
@@ -1125,21 +1124,21 @@ export const EventBinder = {
             console.log(`  - Total: ${TabManager.tabButtons.length}`);
             let withListeners = 0;
             TabManager.tabButtons.forEach((btn, i) => {
-                const tabId = btn.getAttribute('data-tab') || btn._tabId || `botón[${i}]`;
-                
+                const tabId = btn.getAttribute('data-go') || btn.getAttribute('data-tab') || btn._tabId || `botón[${i}]`;
+
                 // ✅ CRÍTICO: Verificar _tabClickHandler (nuestra marca personalizada)
                 // addEventListener no deja rastro en onclick, así que usamos nuestra marca
                 const hasHandler = btn._tabClickHandler !== undefined && btn._tabClickHandler !== null;
                 const isConnected = btn.isConnected;
-                
+
                 if (hasHandler) {
                     withListeners++;
                 }
-                
+
                 const status = hasHandler ? '✓ listener' : '✗ sin listener';
                 const connectedStatus = isConnected ? 'conectado' : 'DESCONECTADO';
                 console.log(`    [${i}] ${tabId} - ${status} (DOM: ${connectedStatus})`);
-                
+
                 if (!hasHandler) {
                     console.log(`         ⚠️ No tiene _tabClickHandler`);
                 }

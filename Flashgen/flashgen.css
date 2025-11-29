@@ -168,6 +168,9 @@ body {
     background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
     animation: fadeIn 0.5s ease-out;
+    /* Sistema de sidebar */
+    display: flex;
+    margin: 0;
 }
 
 @keyframes fadeIn {
@@ -249,6 +252,88 @@ div.container {
     color: var(--color-text-secondary);
 }
 
+/* ========================================
+   SIDEBAR (Nuevo sistema de navegación)
+   ======================================== */
+
+#sidebar {
+    width: 220px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    padding: var(--space-20);
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+#sidebar button,
+#sidebar .sidebar-btn {
+    display: block;
+    width: 100%;
+    margin-bottom: var(--space-8);
+    padding: var(--space-12) var(--space-16);
+    background: rgba(74, 139, 181, 0.03);
+    border: none;
+    border-radius: var(--radius-base);
+    color: var(--color-text);
+    cursor: pointer;
+    text-align: left;
+    transition: all var(--duration-fast);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+#sidebar button:hover,
+#sidebar .sidebar-btn:hover {
+    background: rgba(74, 139, 181, 0.15);
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(74, 139, 181, 0.2);
+}
+
+#sidebar button.active,
+#sidebar .sidebar-btn.active {
+    background: linear-gradient(135deg, var(--color-primary), #5fa47c);
+    color: var(--color-btn-primary-text);
+    border-left: 3px solid var(--color-success);
+    box-shadow: 0 4px 12px rgba(74, 139, 181, 0.3);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Main content area */
+#main {
+    margin-left: 220px;
+    padding: var(--space-24);
+    width: calc(100% - 220px);
+    overflow-y: auto;
+    height: 100vh;
+}
+
+/* Sections (antes tab-content) */
+section.section-content {
+    margin-bottom: var(--space-32);
+    padding: var(--space-20);
+    min-height: 400px;
+    /* Todas las secciones siempre visibles */
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* ========================================
+   TABS (Sistema antiguo - DEPRECATED)
+   Comentado para evitar conflictos con sidebar
+   ======================================== */
+
+/*
 .tabs {
     display: flex;
     gap: var(--space-4);
@@ -259,7 +344,6 @@ div.container {
     z-index: 100;
     padding: var(--space-4) 0;
     background: linear-gradient(to bottom, transparent, rgba(74, 139, 181, 0.05));
-    /* ✅ Asegurar que tabs estén por encima de tab-content y no crezcan en flex */
     flex-shrink: 0;
     flex-grow: 0;
 }
@@ -311,36 +395,29 @@ div.container {
 }
 
 .tab-content {
-    /* ✅ SOLUCIÓN DEFINITIVA: CSS simple sin !important para evitar batallas de especificidad */
     display: none;
     opacity: 0;
     min-height: 400px;
     width: 100%;
-    /* ✅ Asegurar que el contenido tenga altura incluso si está oculto */
     position: relative;
-    /* ✅ Asegurar que el contenido tenga flex para crecer */
     flex: 1;
 }
 
-/* ✅ CRÍTICO: CSS simple - sin !important para que JavaScript pueda sobrescribir si es necesario */
 .tab-content.active,
 div.tab-content.active,
 .container .tab-content.active {
     display: block;
     opacity: 1;
     visibility: visible;
-    /* ✅ Asegurar que esté por encima de elementos con z-index bajo pero no interfiera con tabs (100) */
     z-index: 10;
-    /* ✅ Asegurar altura mínima y que crezca dentro del contenedor flex */
     min-height: 400px;
     height: auto;
     flex: 1;
-    /* ✅ Asegurar que el contenido interno tenga espacio */
     overflow: visible;
-    /* ✅ Deshabilitar animaciones temporalmente para evitar problemas de layout */
     animation: none;
     transform: none;
 }
+*/
 
 /* Tabs para modales de chain-refinement */
 .tab-content-chain {
