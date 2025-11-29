@@ -1,0 +1,394 @@
+/**
+ * Sistema de Contenedores Robusto V2
+ *
+ * GARANTIZA:
+ * - Layout estable que no colapsa
+ * - Altura consistente en todos los navegadores
+ * - Visibilidad garantizada de tabs
+ * - Sin batallas de especificidad CSS/JS
+ */
+
+/* ========================================
+   CONTENEDOR PRINCIPAL
+   ======================================== */
+
+.container {
+    /* Layout con CSS Grid para estabilidad */
+    display: grid !important;
+    grid-template-rows: auto auto 1fr;
+    gap: var(--space-24, 1.5rem);
+
+    /* Dimensiones */
+    max-width: var(--container-xl, 1280px);
+    min-height: 100vh;
+    padding: var(--space-16, 1rem);
+    margin: 0 auto;
+
+    /* Forzar visibilidad */
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    /* Prevenir colapso */
+    min-width: 300px;
+    overflow: visible;
+}
+
+/* Protección máxima contra display: none */
+body > .container,
+html body > .container,
+div.container,
+.container[style*="display"] {
+    display: grid !important;
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+
+.header {
+    /* Ocupa su espacio natural, no crece */
+    grid-row: 1;
+    flex-shrink: 0;
+
+    position: relative;
+    z-index: 50;
+    padding: var(--space-32, 2rem);
+
+    background: linear-gradient(135deg, rgba(74, 139, 181, 0.15), rgba(95, 164, 124, 0.12));
+    border-radius: var(--radius-lg, 1rem);
+    border: 1px solid rgba(74, 139, 181, 0.2);
+    box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+}
+
+/* ========================================
+   TABS NAVIGATION
+   ======================================== */
+
+.tabs {
+    /* Ocupa su espacio natural */
+    grid-row: 2;
+    flex-shrink: 0;
+
+    display: flex;
+    gap: var(--space-4, 0.25rem);
+    padding: var(--space-4, 0.25rem) 0;
+
+    border-bottom: 2px solid rgba(74, 139, 181, 0.3);
+    background: linear-gradient(to bottom, transparent, rgba(74, 139, 181, 0.05));
+
+    /* Scroll horizontal si es necesario */
+    overflow-x: auto;
+    overflow-y: visible;
+
+    /* Por encima de tab-content */
+    position: relative;
+    z-index: 100;
+}
+
+/* ========================================
+   TAB CONTENT AREA - SISTEMA ROBUSTO
+   ======================================== */
+
+/* Contenedor de todos los tab-content */
+.tab-content-wrapper {
+    /* Toma todo el espacio restante */
+    grid-row: 3;
+
+    /* Layout con posición relativa para hijos absolutos */
+    position: relative;
+    min-height: 600px;
+    height: 100%;
+
+    /* Asegurar visibilidad */
+    display: block !important;
+    visibility: visible !important;
+    overflow: visible;
+}
+
+/* Tab content individual */
+.tab-content {
+    /* CRÍTICO: Position absolute para overlay */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    /* Estado inicial: oculto */
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+
+    /* Layout interno: Flexbox vertical */
+    flex-direction: column;
+    gap: var(--space-20, 1.25rem);
+
+    /* Altura garantizada */
+    min-height: 600px;
+
+    /* Permitir scroll si es necesario */
+    overflow-y: auto;
+    overflow-x: visible;
+
+    /* Padding para contenido */
+    padding: var(--space-16, 1rem) 0;
+
+    /* Transición suave */
+    transition: opacity 0.2s ease-out;
+}
+
+/* Tab content ACTIVO */
+.tab-content.active {
+    /* GARANTIZAR visibilidad total */
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+
+    /* Por debajo de .tabs (z-index: 100) */
+    z-index: 10;
+
+    /* Sin transformaciones que puedan causar problemas */
+    transform: none;
+
+    /* Altura mínima garantizada */
+    min-height: 600px;
+}
+
+/* Forzar especificidad máxima */
+div.tab-content.active,
+.container .tab-content.active,
+body .tab-content.active {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* ========================================
+   CARDS - BLOQUES DE CONTENIDO
+   ======================================== */
+
+.card {
+    /* Layout */
+    display: block;
+    position: relative;
+
+    /* Altura mínima garantizada */
+    min-height: 150px;
+
+    /* Spacing */
+    padding: var(--space-20, 1.25rem);
+    margin-bottom: var(--space-20, 1.25rem);
+
+    /* Estilo */
+    background: linear-gradient(135deg, var(--color-surface), rgba(74, 139, 181, 0.02));
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg, 1rem);
+    box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(74, 139, 181, 0.05);
+
+    /* Permitir overflow visible */
+    overflow: visible;
+
+    /* Transición suave */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(74, 139, 181, 0.15);
+    border-color: rgba(74, 139, 181, 0.4);
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   EMPTY STATE - MENSAJES VACÍOS
+   ======================================== */
+
+.empty-state {
+    /* Centrado vertical */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    /* Altura mínima garantizada */
+    min-height: 200px;
+
+    /* Spacing */
+    padding: var(--space-32, 2rem);
+
+    /* Texto */
+    text-align: center;
+    color: var(--color-text-secondary);
+
+    /* Sin colapso */
+    flex-shrink: 0;
+}
+
+/* ========================================
+   CHUNK PREVIEW
+   ======================================== */
+
+.chunk-preview {
+    min-height: 200px !important;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+/* ========================================
+   STATS GRID
+   ======================================== */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--space-12, 0.75rem);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4, 0.25rem);
+    padding: var(--space-12, 0.75rem);
+    background: rgba(74, 139, 181, 0.05);
+    border-radius: var(--radius-base, 0.5rem);
+    text-align: center;
+}
+
+.stat-label {
+    font-size: var(--font-size-xs, 0.75rem);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-value {
+    font-size: var(--font-size-xl, 1.5rem);
+    font-weight: var(--font-weight-bold, 700);
+    color: var(--color-text);
+}
+
+/* ========================================
+   FLASHCARD DISPLAY
+   ======================================== */
+
+#flashcardsList {
+    min-height: 200px !important;
+    display: block;
+}
+
+.flashcard {
+    min-height: 120px;
+    margin-bottom: var(--space-16, 1rem);
+    padding: var(--space-16, 1rem);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-base, 0.5rem);
+    position: relative;
+}
+
+.flashcard-question {
+    font-weight: var(--font-weight-semibold, 600);
+    margin-bottom: var(--space-8, 0.5rem);
+    color: var(--color-text);
+}
+
+.flashcard-answer {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-12, 0.75rem);
+}
+
+.flashcard-actions {
+    display: flex;
+    gap: var(--space-8, 0.5rem);
+    margin-top: var(--space-12, 0.75rem);
+}
+
+/* Estados de flashcard */
+.flashcard.approved {
+    border-left: 3px solid var(--color-success);
+}
+
+.flashcard.rejected {
+    opacity: 0.5;
+    border-left: 3px solid var(--color-error);
+}
+
+.flashcard.pending {
+    border-left: 3px solid var(--color-warning);
+}
+
+/* ========================================
+   EXPORT PREVIEW
+   ======================================== */
+
+.code-block,
+#exportPreview {
+    min-height: 200px !important;
+    padding: var(--space-16, 1rem);
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-base, 0.5rem);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm, 0.875rem);
+    white-space: pre-wrap;
+    overflow-x: auto;
+    color: var(--color-text);
+}
+
+/* ========================================
+   CHAIN VISUALIZATION
+   ======================================== */
+
+#chainVisualization,
+#chainInfo {
+    min-height: 150px !important;
+}
+
+.chain-run {
+    margin-bottom: var(--space-16, 1rem);
+    padding: var(--space-16, 1rem);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-base, 0.5rem);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .container {
+        padding: var(--space-8, 0.5rem);
+    }
+
+    .tab-content {
+        min-height: 400px;
+    }
+
+    .tab-content.active {
+        min-height: 400px;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ========================================
+   DEBUGGING HELPERS
+   ======================================== */
+
+/* Descomentar para debugging visual */
+/*
+.container { outline: 3px solid red; }
+.tabs { outline: 2px solid blue; }
+.tab-content { outline: 2px solid green; }
+.tab-content.active { outline: 3px solid lime; }
+.card { outline: 1px solid yellow; }
+*/

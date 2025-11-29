@@ -15,6 +15,10 @@
     <!-- ✅ OPTIMIZACIÓN: Preload CSS crítico con fallback -->
     <link rel="preload" href="flashgen.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="flashgen.css"></noscript>
+
+    <!-- ✅ NUEVO: Sistema de Contenedores Robusto V2 -->
+    <link rel="stylesheet" href="flashgen_container_system.css">
+
     <script>
         // Fallback para navegadores que no soportan onload en link
         (function() {
@@ -1047,7 +1051,26 @@ Formatos soportados:
             } else {
                 console.error('❌ window.UI no disponible');
             }
-            
+
+            // 1.5 ✅ NUEVO: Inicializar TabManagerV2 (Sistema de contenedores robusto)
+            if (window.TabManagerV2 && typeof window.TabManagerV2.init === 'function') {
+                try {
+                    window.TabManagerV2.init();
+                    console.log('✅ TabManagerV2 inicializado (Sistema robusto activado)');
+
+                    // Exponer componentes para debugging
+                    window.ResultsTab = window.TabManagerV2.components.get('results');
+                    window.ExportTab = window.TabManagerV2.components.get('export');
+                    window.ChainTab = window.TabManagerV2.components.get('chain');
+                    window.InputTab = window.TabManagerV2.components.get('input');
+                } catch (error) {
+                    console.error('❌ Error inicializando TabManagerV2:', error);
+                    console.warn('⚠️ Fallback: usando TabManager v1');
+                }
+            } else {
+                console.warn('⚠️ TabManagerV2 no disponible, usando TabManager v1');
+            }
+
             // 2. Renderizar pipeline
             if (window.PipelineManager && typeof window.PipelineManager.renderPipeline === 'function') {
                 window.PipelineManager.renderPipeline();
