@@ -26,6 +26,7 @@ import { EventBinder } from './event_binder.js';
 
 // ✅ Refactorización: Importar módulos helper extraídos (mantiene compatibilidad 100%)
 import * as UIHelpers from './ui_helpers.js';
+import * as UIImport from './ui_import.js';
 
 const UI = {
     initialized: false,
@@ -941,130 +942,28 @@ const UI = {
             setRange('profile_maxRefine', maxRefine);
         },
 
+        // ✅ Refactorizado: Delegado a ui_import.js (mantiene compatibilidad 100%)
         bindImportButtons() {
-            if (!this.fileInput) return;
-
-            const triggerFileSelect = (accept, handler) => {
-                this.fileInput.accept = accept;
-                this.fileInput.onchange = async (event) => {
-                    const file = event.target.files && event.target.files[0];
-                    if (!file) return;
-                    
-                    // Validar tamaño de archivo (maximo 10MB)
-                    const maxSize = 10 * 1024 * 1024;
-                    if (file.size > maxSize) {
-                        UI.toast(`❌ Archivo demasiado grande (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximo: 10MB`, 'error');
-                        this.fileInput.value = '';
-                        return;
-                    }
-                    
-                    try {
-                        await handler(file);
-                    } finally {
-                        this.fileInput.value = '';
-                    }
-                };
-                this.fileInput.click();
-            };
-
-            const importTextBtn = this.getElement('importTextBtn', 'buttons');
-            if (importTextBtn) {
-                importTextBtn.addEventListener('click', () => {
-                    triggerFileSelect('.txt,.md,.docx', async (file) => {
-                        const ext = file.name.split('.').pop()?.toLowerCase();
-                        let text = '';
-                        if (ext === 'docx') {
-                            text = await Processing.extractDocxText(file);
-                        } else {
-                            text = await file.text();
-                        }
-                        this.setImportedText(text);
-                        UI.showImportStatus(`✅ Archivo cargado (${file.name})`, 'success');
-                    });
-                });
-            }
-
-            const importPdfBtn = this.getElement('importPdfBtn', 'buttons');
-            if (importPdfBtn) {
-                importPdfBtn.addEventListener('click', () => {
-                    triggerFileSelect('.pdf', async (file) => {
-                        const text = await Processing.extractPdfText(file);
-                        this.setImportedText(text);
-                    });
-                });
-            }
-
-            const importWordListBtn = this.getElement('importWordListBtn', 'buttons');
-            if (importWordListBtn) {
-                importWordListBtn.addEventListener('click', () => {
-                    triggerFileSelect('.txt,.csv', async (file) => {
-                        const text = await file.text();
-                        const normalized = text
-                            .split(/\r?\n/)
-                            .map(line => line.trim())
-                            .filter(Boolean)
-                            .join('\n');
-                        this.setImportedText(normalized);
-                        UI.showImportStatus(`✅ Lista importada (${file.name})`, 'success');
-                    });
-                });
-            }
-
-            const importJsonBtn = this.getElement('importJsonBtn', 'buttons');
-            if (importJsonBtn) {
-                importJsonBtn.addEventListener('click', () => {
-                    triggerFileSelect('.json', async (file) => {
-                        try {
-                            const content = await file.text();
-                            const parsed = JSON.parse(content);
-                            const chunks = Array.isArray(parsed)
-                                ? parsed
-                                : Array.isArray(parsed.chunks) ? parsed.chunks : [];
-                            if (!chunks.length) {
-                                throw new Error('JSON sin chunks');
-                            }
-                            State.pipeline.options.chunkMethod = 'none';
-                            State.importedChunks = chunks;
-                            this.setImportedText(chunks.map(chunk => chunk.text || chunk).join('\n\n'));
-                            UI.showImportStatus(`✅ JSON con ${chunks.length} chunks cargado`, 'success');
-                        } catch (err) {
-                            UI.showImportStatus(`❌ Error al procesar JSON: ${err.message}`, 'error');
-                        }
-                    });
-                });
-            }
-
-            const pasteFromClipboardBtn = this.getElement('pasteFromClipboardBtn', 'buttons');
-            if (pasteFromClipboardBtn) {
-                pasteFromClipboardBtn.addEventListener('click', async () => {
-                    try {
-                        if (!navigator.clipboard || !navigator.clipboard.readText) {
-                            UI.toast('❌ API de portapapeles no disponible en este navegador', 'error');
-                            return;
-                        }
-                        const text = await navigator.clipboard.readText();
-                        if (!text || !text.trim()) {
-                            UI.toast('⚠️ Portapapeles vacio', 'warning');
-                            return;
-                        }
-                        this.setImportedText(text);
-                        this.updateInputStats();
-                        UI.showImportStatus(`✅ Texto pegado desde portapapeles (${text.length} caracteres)`, 'success');
-                    } catch (error) {
-                        UI.toast(`❌ Error al leer portapapeles: ${error.message}`, 'error');
-                    }
-                });
-            }
+            UIImport.bindImportButtons(
+                this.getElement.bind(this),
+                this.setImportedText.bind(this),
+                UIHelpers.showImportStatus.bind(null, undefined, undefined, this.getElement.bind(this)),
+                UIHelpers.toast,
+                { current: this.fileInput },
+                Processing,
+                State
+            );
         },
 
+        // ✅ Refactorizado: Delegado a ui_import.js (mantiene compatibilidad 100%)
         setImportedText(text) {
-            const inputText = this.getElement('inputText', 'inputs');
-            if (inputText) {
-                inputText.value = text;
-                this.updateInputStats();
-                this.scheduleChunkPreviewUpdate();
-                UI.switchTab('input');
-            }
+            UIImport.setImportedText(
+                text,
+                this.getElement.bind(this),
+                this.updateInputStats.bind(this),
+                this.scheduleChunkPreviewUpdate.bind(this),
+                UI.switchTab.bind(UI)
+            );
         },
 
         toggleCancelButton(show) {
