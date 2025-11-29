@@ -24,6 +24,9 @@ import { DomCache } from './dom_cache.js';
 import { TabManager } from './tab_manager.js';
 import { EventBinder } from './event_binder.js';
 
+// ✅ Refactorización: Importar módulos helper extraídos (mantiene compatibilidad 100%)
+import * as UIHelpers from './ui_helpers.js';
+
 const UI = {
     initialized: false,
     activeTab: 'config',
@@ -275,57 +278,31 @@ const UI = {
             return false;
         },
 
+        // ✅ Refactorizado: Delegado a ui_helpers.js (mantiene compatibilidad 100%)
         toast(message, type = 'info') {
-            if (!message) return;
-            this.ensureToastContainer();
-
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            toast.textContent = message;
-
-            this.toastContainer.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.add('fade-out');
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
+            UIHelpers.toast(message, type);
+            // Sincronizar referencia al toast container para compatibilidad
+            this.toastContainer = UIHelpers.getToastContainer();
         },
 
+        // ✅ Refactorizado: Delegado a ui_helpers.js (mantiene compatibilidad 100%)
         updateProgress(current, total) {
-            const progressFill = this.getElement('progressFill', 'containers');
-            if (!progressFill) return;
-            if (total <= 0) total = 1;
-            const percentage = Math.min(100, Math.round((current / total) * 100));
-            progressFill.style.width = `${percentage}%`;
-            progressFill.textContent = `${percentage}%`;
+            UIHelpers.updateProgress(current, total, this.getElement.bind(this));
         },
 
+        // ✅ Refactorizado: Delegado a ui_helpers.js (mantiene compatibilidad 100%)
         updateElement(id, html) {
-            if (!id) return;
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.innerHTML = html;
+            UIHelpers.updateElement(id, html);
         },
 
+        // ✅ Refactorizado: Delegado a ui_helpers.js (mantiene compatibilidad 100%)
         download(filename, data, mimeType = 'text/plain') {
-            const blob = new Blob([data], { type: mimeType });
-            const url = URL.createObjectURL(blob);
-            const anchor = document.createElement('a');
-            anchor.href = url;
-            anchor.download = filename;
-            document.body.appendChild(anchor);
-            anchor.click();
-            document.body.removeChild(anchor);
-            URL.revokeObjectURL(url);
+            UIHelpers.download(filename, data, mimeType);
         },
 
+        // ✅ Refactorizado: Delegado a ui_helpers.js (mantiene compatibilidad 100%)
         showImportStatus(message, type = 'info') {
-            const importStatus = this.getElement('importStatus', 'containers');
-            const importStatusText = this.getElement('importStatusText', 'containers');
-            if (!importStatus || !importStatusText) return;
-            importStatus.className = `import-status status-${type}`;
-            importStatus.style.display = 'flex';
-            importStatusText.textContent = message;
+            UIHelpers.showImportStatus(message, type, this.getElement.bind(this));
         },
 
         updateChunkMethodHelp(method = 'paragraph') {
@@ -1264,9 +1241,9 @@ const UI = {
             }
         },
 
+        // ✅ Refactorizado: Delegado a ui_helpers.js (mantiene compatibilidad 100%)
         toggleGroup(element, shouldShow) {
-            if (!element) return;
-            element.style.display = shouldShow ? '' : 'none';
+            UIHelpers.toggleGroup(element, shouldShow);
         },
 
         scheduleChunkPreviewUpdate() {
@@ -1882,9 +1859,9 @@ const UI = {
             this.toggleGroup(manualContextGroup, showManualContext.includes(method));
         },
 
+        // ✅ Refactorizado: Delegado a ui_helpers.js (mantiene compatibilidad 100%)
         toggleGroup(element, shouldShow) {
-            if (!element) return;
-            element.style.display = shouldShow ? '' : 'none';
+            UIHelpers.toggleGroup(element, shouldShow);
         },
 
         populateApiConfig() {
@@ -2042,19 +2019,9 @@ const UI = {
             DebugLogger.log('🔄 Configuracion sincronizada con pipeline', 'info');
         },
 
+        // ✅ Refactorizado: Delegado a ui_helpers.js (mantiene compatibilidad 100%)
         ensureToastContainer() {
-            if (this.toastContainer) return;
-            const container = document.createElement('div');
-            container.id = 'toastContainer';
-            container.style.position = 'fixed';
-            container.style.bottom = '20px';
-            container.style.right = '20px';
-            container.style.display = 'flex';
-            container.style.flexDirection = 'column';
-            container.style.gap = '8px';
-            container.style.zIndex = '2000';
-            document.body.appendChild(container);
-            this.toastContainer = container;
+            this.toastContainer = UIHelpers.ensureToastContainer();
         }
     };
 
