@@ -819,9 +819,9 @@ Formatos soportados:
                 </div><!-- Fin heuristicPanel -->
             </div>
 
-            <div class="card">
+            <div class="card" style="min-height: 200px;">
                 <h3>👁️ Vista Previa de Segmentacion</h3>
-                <div class="chunk-preview" id="chunkPreview">
+                <div class="chunk-preview" id="chunkPreview" style="min-height: 150px;">
                     <p class="empty-state">Los chunks apareceran aqui cuando ingreses texto en la pestaña Entrada</p>
                 </div>
             </div>
@@ -868,7 +868,7 @@ Formatos soportados:
 
         <!-- CHAIN TAB -->
         <div class="tab-content" id="chain">
-            <div class="card">
+            <div class="card" style="min-height: 300px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                     <h3 style="margin: 0;">⛓️ Visualización de Cadena (LangChain)</h3>
                     <div style="display: flex; align-items: center; gap: 8px;">
@@ -881,14 +881,14 @@ Formatos soportados:
                     <button class="btn btn-secondary btn-sm" id="expandAllSteps">➕ Expandir Todo</button>
                     <button class="btn btn-secondary btn-sm" id="collapseAllSteps">➖ Colapsar Todo</button>
                 </div>
-                <div id="chainVisualization">
+                <div id="chainVisualization" style="min-height: 150px;">
                     <p class="empty-state">Genera flashcards con el "Modo Chain" activado para ver el proceso de razonamiento paso a paso.</p>
                 </div>
             </div>
-            <div class="card">
+            <div class="card" style="min-height: 200px;">
                 <h3>🔗 Información de Cadena</h3>
                 <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Detalles sobre la configuración y estado de la cadena de procesamiento</p>
-                <div id="chainInfo">
+                <div id="chainInfo" style="min-height: 100px;">
                     <p class="empty-state">La información detallada de la cadena aparecerá aquí cuando se active el modo Chain.</p>
                 </div>
             </div>
@@ -896,7 +896,7 @@ Formatos soportados:
 
         <!-- RESULTS TAB -->
         <div class="tab-content" id="results">
-            <div class="card">
+            <div class="card" style="min-height: 150px;">
                 <h3>📈 Estadísticas de Generación</h3>
                 <div class="stats" id="resultsStats">
                     <div class="stat-item">
@@ -918,20 +918,20 @@ Formatos soportados:
                 </div>
             </div>
 
-            <div class="card" id="chainMetricsCard">
+            <div class="card" id="chainMetricsCard" style="min-height: 180px;">
                 <h3>⛓️ Métricas de Cadena</h3>
-                <div id="chainMetricsContent">
+                <div id="chainMetricsContent" style="min-height: 100px;">
                     <p class="empty-state">Las métricas de cadena aparecerán aquí cuando se generen flashcards con el modo Chain activado.</p>
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card" style="min-height: 250px;">
                 <h3>📊 Tarjetas Generadas</h3>
                 <div class="btn-group" style="margin-bottom: 16px;">
                     <button class="btn btn-primary btn-sm" id="approveAllBtn">✅ Aprobar Todo</button>
                     <button class="btn btn-secondary btn-sm" id="rejectAllBtn">❌ Rechazar Todo</button>
                 </div>
-                <div id="flashcardsList">
+                <div id="flashcardsList" style="min-height: 150px;">
                     <p class="empty-state">Las tarjetas generadas apareceran aqui</p>
                 </div>
             </div>
@@ -939,7 +939,7 @@ Formatos soportados:
 
         <!-- LEARNING TAB -->
         <div class="tab-content" id="learning">
-            <div class="card">
+            <div class="card" style="min-height: 250px;">
                 <h3>🧠 Análisis de Aprendizaje</h3>
                 <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Analisis de tokens y razonamiento del modelo</p>
                 <div class="form-group">
@@ -948,14 +948,14 @@ Formatos soportados:
                         <option value="">-- Selecciona una tarjeta generada --</option>
                     </select>
                 </div>
-                <div id="tokenAnalysis">
+                <div id="tokenAnalysis" style="min-height: 120px;">
                     <p class="empty-state">Genera tarjetas para ver el análisis detallado de tokens y atención.</p>
                 </div>
             </div>
-            <div class="card">
+            <div class="card" style="min-height: 200px;">
                 <h3>📊 Métricas de Rendimiento</h3>
                 <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Análisis de eficiencia y calidad del modelo</p>
-                <div id="performanceMetrics">
+                <div id="performanceMetrics" style="min-height: 100px;">
                     <p class="empty-state">Las métricas de rendimiento aparecerán aquí después del análisis de tokens.</p>
                 </div>
             </div>
@@ -963,18 +963,18 @@ Formatos soportados:
 
         <!-- COMPARISON TAB -->
         <div class="tab-content" id="comparison">
-            <div class="card">
+            <div class="card" style="min-height: 250px;">
                 <h3>⚖️ Comparación de Modos</h3>
                 <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Compara el rendimiento entre generación determinista y estocástica (creatividad alta vs baja).</p>
                 <button class="btn btn-primary" id="compareModesBtn" style="width: 100%; margin-bottom: 16px;">🔄 Ejecutar Comparación</button>
-                <div id="modeComparison">
+                <div id="modeComparison" style="min-height: 120px;">
                     <p class="empty-state">Los resultados de la comparación aparecerán aquí.</p>
                 </div>
             </div>
-            <div class="card">
+            <div class="card" style="min-height: 200px;">
                 <h3>📈 Análisis Comparativo</h3>
                 <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Estadísticas detalladas y métricas de calidad entre modos</p>
-                <div id="comparisonAnalysis">
+                <div id="comparisonAnalysis" style="min-height: 100px;">
                     <p class="empty-state">El análisis comparativo detallado aparecerá aquí después de ejecutar la comparación.</p>
                 </div>
             </div>
@@ -982,7 +982,7 @@ Formatos soportados:
 
         <!-- EXPORT TAB -->
         <div class="tab-content" id="export">
-            <div class="card">
+            <div class="card" style="min-height: 220px;">
                 <h3>📤 Exportar Flashcards</h3>
                 <div class="form-group">
                     <label class="form-label" for="exportFormat">Formato de exportación</label>
@@ -999,9 +999,9 @@ Formatos soportados:
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card" style="min-height: 250px;">
                 <h3>👁️ Vista Previa</h3>
-                <div class="code-block" id="exportPreview">Selecciona un formato para ver la vista previa...</div>
+                <div class="code-block" id="exportPreview" style="min-height: 150px;">Selecciona un formato para ver la vista previa...</div>
             </div>
         </div>
     </div>

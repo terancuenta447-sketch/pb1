@@ -121,6 +121,10 @@ const Results = {
         // ✅ FIX #4: Inicializar antes de acceder al DOM
         this.init();
         if (!this.flashcardsList) return;
+
+        // ✅ FIX: Asegurar que el contenedor mantenga altura mínima
+        this.flashcardsList.style.minHeight = '150px';
+
         const cards = State.flashcards || [];
         const visibleCards = cards
             .map((card, index) => ({ card, index }))
@@ -209,9 +213,14 @@ const Results = {
 
     renderChainMetrics() {
         if (!this.chainMetricsCard || !this.chainMetricsContent) return;
+
+        // ✅ FIX: Asegurar altura mínima incluso cuando está vacío
+        this.chainMetricsCard.style.minHeight = '180px';
+        this.chainMetricsContent.style.minHeight = '100px';
+
         if (!this.chainMetrics) {
-            this.chainMetricsCard.style.display = 'none';
-            this.chainMetricsContent.innerHTML = '';
+            this.chainMetricsCard.style.display = 'block';
+            this.chainMetricsContent.innerHTML = '<p class="empty-state">Las métricas de cadena aparecerán aquí cuando se generen flashcards con el modo Chain activado.</p>';
             return;
         }
 

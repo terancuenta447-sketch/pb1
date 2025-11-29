@@ -71,16 +71,19 @@ const ChainVisualization = {
             console.warn('⚠️ ChainVisualization.render(): container no disponible');
             return;
         }
-        
+
+        // ✅ FIX: Asegurar altura mínima del container
+        this.container.style.minHeight = '150px';
+
         // ✅ MEJORA: Logging para debugging
         console.log(`📊 ChainVisualization: ${this.runs.length} runs disponibles`);
-        
+
         if (!this.isEnabled()) {
             this.container.innerHTML = '<p class="empty-state">Visualización desactivada. Actívala en Configuración.</p>';
             console.log('ℹ️ ChainVisualization: Visualización desactivada');
             return;
         }
-        
+
         if (this.runs.length === 0) {
             this.container.innerHTML = '<p class="empty-state">Genera flashcards con modo Chain activado para ver los pasos de ejecución</p>';
             console.log('ℹ️ ChainVisualization: Sin runs, mostrando mensaje de estado vacío');

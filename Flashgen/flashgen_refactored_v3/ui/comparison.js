@@ -83,6 +83,9 @@ const Comparison = {
         const container = document.getElementById('modeComparison');
         if (!container) return;
 
+        // ✅ FIX: Asegurar altura mínima del container
+        container.style.minHeight = '120px';
+
         if (!deterministicStats && !stochasticStats) {
             this.renderMessage('No hay suficientes datos para comparar.');
             return;
@@ -118,6 +121,8 @@ const Comparison = {
     renderMessage(message) {
         const container = document.getElementById('modeComparison');
         if (container) {
+            // ✅ FIX: Asegurar altura mínima
+            container.style.minHeight = '120px';
             container.innerHTML = `<p class="empty-state">${this.escape(message)}</p>`;
         }
     },

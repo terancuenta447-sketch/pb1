@@ -46,12 +46,15 @@ const Learning = {
             console.warn('⚠️ Learning.updateUI(): Elementos DOM no disponibles');
             return;
         }
-        
+
+        // ✅ FIX: Asegurar altura mínima del container de análisis
+        this.analysisContainer.style.minHeight = '120px';
+
         const cards = State.flashcards || [];
-        
+
         // ✅ MEJORA: Logging para debugging
         console.log(`📊 Learning: ${cards.length} flashcards disponibles`);
-        
+
         const previousValue = this.cardSelect.value;
         const options = cards.map((card, index) => {
             const label = (card.question || card.metadata?.title || `Tarjeta ${index + 1}`).substring(0, 80);
@@ -77,6 +80,10 @@ const Learning = {
 
     renderAnalysis() {
         if (!this.analysisContainer) return;
+
+        // ✅ FIX: Asegurar altura mínima
+        this.analysisContainer.style.minHeight = '120px';
+
         const cards = State.flashcards || [];
         const selectedIndex = parseInt(this.cardSelect?.value ?? '', 10);
         if (!Number.isInteger(selectedIndex) || !cards[selectedIndex]) {

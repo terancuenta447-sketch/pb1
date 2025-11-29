@@ -103,12 +103,15 @@ const Exporter = {
                 return;
             }
         }
-        
+
+        // ✅ FIX: Asegurar altura mínima del preview
+        this.preview.style.minHeight = '150px';
+
         const cards = this.getCards();
-        
+
         // ✅ MEJORA: Logging y manejo mejorado de estado vacío
         console.log(`📊 Exporter: ${cards.length} flashcards disponibles`);
-        
+
         if (!cards.length) {
             this.preview.textContent = 'Aún no hay tarjetas para exportar';
             console.log('ℹ️ Exporter: Mostrando mensaje de estado vacío');
